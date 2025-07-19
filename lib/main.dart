@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:figma_app/screens/home_screen.dart'; // Correct import for your HomeScreen
+import 'package:figma_app/screens/login_screen.dart'; // Import the new LoginScreen
 
 void main() {
   runApp(const MyApp());
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue, // You can customize your theme further
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: const HomeScreen(), // Set HomeScreen as the initial screen
+      home: const LoginScreen(), // Set LoginScreen as the initial screen
     );
   }
 }

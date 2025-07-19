@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart'; // Import for SVG assets
+import 'package:figma_app/screens/role_selection_screen.dart'; // Import for role selection
 
 // Assuming you have these custom widgets defined as per your file structure
 import '../widgets/custom_app_bar.dart';
 import '../widgets/category_card.dart';
 import '../widgets/info_card.dart';
 import '../widgets/step_tile.dart';
-import '../widgets/bottom_navigation.dart'; // Corrected import for CustomBottomNavigation
+import '../widgets/bottom_navigation.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -17,7 +18,23 @@ class HomeScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight), // Default AppBar height
-        child: const CustomAppBar(), // Using the CustomAppBar widget
+        child: CustomAppBar( // Removed const as it now has dynamic actions
+          actions: [
+            TextButton(
+              onPressed: () {
+                // Navigate to role selection screen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const RoleSelectionScreen()),
+                );
+              },
+              child: const Text(
+                'Select Role',
+                style: TextStyle(color: Colors.white), // Adjust color as needed for your app bar
+              ),
+            ),
+          ],
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -31,7 +48,7 @@ class HomeScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                   image: DecorationImage(
-                    image: const AssetImage("assets/images/banner.jpg"), // CONFIRMED PATH & FILENAME
+                    image: const AssetImage("assets/images/banner.jpg"),
                     fit: BoxFit.cover,
                     colorFilter: ColorFilter.mode(
                       Colors.black.withOpacity(0.4),
@@ -119,25 +136,19 @@ class HomeScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 children: const [
                   CategoryCard(
-                    imagePath: 'assets/images/steel.png', // <--- Updated to local PNG
+                    imagePath: 'assets/images/steel.png',
                     title: 'Steel',
                   ),
                   SizedBox(width: 12),
                   CategoryCard(
-                    imagePath: 'assets/images/aluminum.png', // <--- Updated to local PNG
+                    imagePath: 'assets/images/aluminum.png',
                     title: 'Aluminum',
                   ),
                   SizedBox(width: 12),
                   CategoryCard(
-                    imagePath: 'assets/images/copper.png', // <--- Updated to local PNG
+                    imagePath: 'assets/images/copper.png',
                     title: 'Copper',
                   ),
-                  // SizedBox(width: 12), // Brass section removed, so no need for this gap
-                  // CategoryCard( // Brass card removed
-                  //   imagePath: 'assets/images/brass.png',
-                  //   title: 'Brass',
-                  // ),
-                  // Add more CategoryCard widgets as needed based on your Figma design
                 ],
               ),
             ),
@@ -256,7 +267,7 @@ class HomeScreen extends StatelessWidget {
               child: const Text('Request a Quote Now'),
             ),
           ),
-          const CustomBottomNavigation(), // Corrected widget name and made const
+          const CustomBottomNavigation(),
           const SizedBox(height: 20),
         ],
       ),

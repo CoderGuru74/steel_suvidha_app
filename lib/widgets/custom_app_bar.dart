@@ -1,40 +1,26 @@
 import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const CustomAppBar({super.key});
+  final List<Widget>? actions; // Added actions parameter
+
+  const CustomAppBar({Key? key, this.actions}) : super(key: key); // Updated constructor
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: Colors.white,
-      elevation: 0, // No shadow
-      title: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0), // Equivalent to px-2
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween, // Distribute space
-          children: [
-            // Logo or App Name (You can replace this with an Image.asset for your logo)
-            const Text(
-              'SteelSuvidha',
-              style: TextStyle(
-                color: Color(0xFF131416), // text-[#131416]
-                fontSize: 20, // text-xl
-                fontWeight: FontWeight.bold, // font-bold
-              ),
-            ),
-            // Menu Icon (You can replace with SvgPicture.asset if you have an SVG icon)
-            IconButton(
-              icon: Icon(Icons.menu, color: Color(0xFF131416)), // text-[#131416]
-              onPressed: () {
-                // Handle menu icon tap (e.g., open a drawer)
-              },
-            ),
-          ],
+      title: const Text(
+        'Steel Suvidha',
+        style: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
         ),
       ),
+      backgroundColor: const Color(0xFFB8CEE4), // Your app bar color
+      elevation: 0, // No shadow
+      actions: actions, // Pass the actions to the AppBar
     );
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight); // THIS IS CRUCIAL FOR AppBar
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight); // Standard AppBar height
 }
