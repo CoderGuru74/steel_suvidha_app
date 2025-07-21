@@ -1,7 +1,7 @@
+// lib/screens/login_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:figma_app/screens/home_screen.dart';
-import 'package:figma_app/widgets/animated_background_painter.dart'; // Import your new painter
+import 'package:figma_app/screens/role_selection_screen.dart'; // To navigate after login
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -10,36 +10,37 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStateMixin {
+class _LoginScreenState extends State<LoginScreen> {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
-
-  // AnimationController for the background painter
-  late AnimationController _animationController;
-
-  @override
-  void initState() {
-    super.initState();
-    _animationController = AnimationController(
-      vsync: this, // Use `this` for the TickerProvider
-      duration: const Duration(seconds: 15), // Duration for one loop of animation
-    )..repeat(); // Make the animation loop indefinitely
-  }
+  bool _obscurePassword = true;
+  bool _isLoading = false;
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
-    _animationController.dispose(); // Dispose the controller
     super.dispose();
   }
 
-  void _login() {
+  void _login() async {
     if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isLoading = true;
+      });
+
+      // Simulate a login API call
+      await Future.delayed(const Duration(seconds: 2));
+
+      setState(() {
+        _isLoading = false;
+      });
+
+      if (!mounted) return;
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
+        MaterialPageRoute(builder: (context) => const RoleSelectionScreen()),
       );
     }
   }
@@ -47,166 +48,172 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Login to Steel Suvidha'),
-        backgroundColor: const Color(0xFFB8CEE4),
-        centerTitle: true,
-      ),
-      body: Stack(
-        children: [
-          // Custom Animated Background
-          Positioned.fill(
-            child: CustomPaint(
-              painter: AnimatedBackgroundPainter(_animationController), // Pass the animation controller
-            ),
-          ),
-          // Subtle overlay for readability
-          Positioned.fill(
-            child: Container(
-              color: Colors.black.withOpacity(0.4),
-            ),
-          ),
-          // Your existing login form content
-          Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: AnimateList(
-                    interval: 100.ms,
-                    effects: const [
-                      FadeEffect(duration: Duration(milliseconds: 500)),
-                      ScaleEffect(duration: Duration(milliseconds: 500), begin: Offset(0.95, 0.95), end: Offset(1, 1)),
-                    ],
+      // background color is handled by ThemeData in main.dart
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // App Logo/Title
+              Text(
+                'Steel Suvidha',
+                style: TextStyle(
+                  fontSize: 38,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).primaryColor, // Use theme primary color
+                ),
+              ).animate().fadeIn(duration: 800.ms, delay: 200.ms).slideY(begin: -0.1, end: 0),
+              const SizedBox(height: 50),
+
+              Container(
+                padding: const EdgeInsets.all(24.0),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface, // Use theme surface color (white)
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.grey.shade200, width: 1), // Light border
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1), // Lighter shadow
+                      blurRadius: 15,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
+                ),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Text(
-                        'Welcome Back!',
+                      Text(
+                        'Login to your account',
                         style: TextStyle(
-                          fontSize: 32,
+                          fontSize: 24,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.onSurface, // Use theme onSurface color (black)
                         ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 10),
-                      const Text(
-                        'Sign in to your account',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white70,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 40),
+                      ).animate().fadeIn(duration: 800.ms, delay: 400.ms).slideY(begin: 0.1, end: 0),
+                      const SizedBox(height: 30),
+
+                      // Email/Username Input (now uses ThemeData's InputDecorationTheme)
                       TextFormField(
                         controller: _emailController,
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: InputDecoration(
-                          labelText: 'Email',
-                          hintText: 'Enter your email',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          prefixIcon: const Icon(Icons.email_outlined),
-                          filled: true,
-                          fillColor: Colors.white.withOpacity(0.9),
-                        ),
+                        decoration: _inputDecoration('Email / Username', Icons.person_outline),
+                        style: TextStyle(color: Theme.of(context).colorScheme.onSurface), // Use theme onSurface color
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter your email';
-                          }
-                          if (!value.contains('@')) {
-                            return 'Please enter a valid email';
+                            return 'Please enter your email or username';
                           }
                           return null;
                         },
-                      ),
+                      ).animate().fadeIn(duration: 800.ms, delay: 600.ms).slideY(begin: 0.1, end: 0),
                       const SizedBox(height: 20),
+
+                      // Password Input (now uses ThemeData's InputDecorationTheme)
                       TextFormField(
                         controller: _passwordController,
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          labelText: 'Password',
-                          hintText: 'Enter your password',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
+                        obscureText: _obscurePassword,
+                        decoration: _inputDecoration(
+                          'Password',
+                          Icons.lock_outline,
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6), // Adjust icon color
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _obscurePassword = !_obscurePassword;
+                              });
+                            },
                           ),
-                          prefixIcon: const Icon(Icons.lock_outline),
-                          filled: true,
-                          fillColor: Colors.white.withOpacity(0.9),
                         ),
+                        style: TextStyle(color: Theme.of(context).colorScheme.onSurface), // Use theme onSurface color
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your password';
                           }
                           if (value.length < 6) {
-                            return 'Password must be at least 6 characters long';
+                            return 'Password must be at least 6 characters';
                           }
                           return null;
                         },
-                      ),
+                      ).animate().fadeIn(duration: 800.ms, delay: 800.ms).slideY(begin: 0.1, end: 0),
+                      const SizedBox(height: 10),
+
                       Align(
                         alignment: Alignment.centerRight,
                         child: TextButton(
                           onPressed: () {
-                            // Handle forgot password logic
+                            // TODO: Navigate to Forgot Password Screen
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Forgot Password? functionality coming soon!')),
+                            );
                           },
-                          child: const Text(
+                          child: Text(
                             'Forgot Password?',
-                            style: TextStyle(color: Colors.white),
+                            style: TextStyle(color: Theme.of(context).primaryColor), // Use theme primary color
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: _login,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFB8CEE4),
-                          foregroundColor: const Color(0xFF131416),
-                          minimumSize: const Size(double.infinity, 50),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          textStyle: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      ).animate().fadeIn(duration: 800.ms, delay: 1000.ms),
+                      const SizedBox(height: 30),
+
+                      // Login Button (uses ThemeData's ElevatedButtonTheme)
+                      SizedBox(
+                        width: double.infinity,
+                        height: 55,
+                        child: ElevatedButton(
+                          onPressed: _isLoading ? null : _login,
+                          child: _isLoading
+                              ? const CircularProgressIndicator(color: Colors.white)
+                              : const Text(
+                                  'Login',
+                                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold), // Text color handled by theme
+                                ),
                         ),
-                        child: const Text('Login'),
-                      ),
+                      ).animate().fadeIn(duration: 800.ms, delay: 1200.ms).scale(begin: const Offset(0.9, 0.9), end: const Offset(1.0, 1.0)),
                       const SizedBox(height: 20),
+
+                      // Sign Up Option
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text(
+                          Text(
                             "Don't have an account?",
-                            style: TextStyle(color: Colors.white),
+                            style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7), fontSize: 16),
                           ),
                           TextButton(
                             onPressed: () {
-                              // Handle navigation to a sign-up page
+                              // TODO: Navigate to Sign Up Screen
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Sign Up functionality coming soon!')),
+                              );
                             },
-                            child: const Text(
+                            child: Text(
                               'Sign Up',
-                              style: TextStyle(
-                                color: Color(0xFF007BFF),
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 16),
                             ),
                           ),
                         ],
-                      ),
+                      ).animate().fadeIn(duration: 800.ms, delay: 1400.ms),
                     ],
                   ),
                 ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
+    );
+  }
+
+  // Input decoration is now largely handled by ThemeData, but custom suffixIcon still needs it
+  InputDecoration _inputDecoration(String labelText, IconData icon, {Widget? suffixIcon}) {
+    return InputDecoration(
+      labelText: labelText,
+      prefixIcon: Icon(icon),
+      suffixIcon: suffixIcon,
+      // All other decoration properties are pulled from ThemeData's InputDecorationTheme
     );
   }
 }

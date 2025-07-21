@@ -1,26 +1,61 @@
+// lib/widgets/custom_app_bar.dart
 import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final List<Widget>? actions; // Added actions parameter
+  final String title;
+  final bool showBackButton;
+  final bool showShoppingCart;
+  final VoidCallback? onBackButtonPressed;
+  final VoidCallback? onShoppingCartPressed;
+  final List<String> breadcrumbs;
 
-  const CustomAppBar({Key? key, this.actions}) : super(key: key); // Updated constructor
+  const CustomAppBar({
+    super.key,
+    required this.title,
+    this.showBackButton = false,
+    this.showShoppingCart = false,
+    this.onBackButtonPressed,
+    this.onShoppingCartPressed,
+    this.breadcrumbs = const [],
+  });
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: const Text(
-        'Steel Suvidha',
-        style: TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-        ),
+      // Colors are handled by AppBarTheme in main.dart
+      leading: showBackButton
+          ? IconButton(
+              icon: const Icon(Icons.arrow_back), // Icon color from theme
+              onPressed: onBackButtonPressed ?? () => Navigator.of(context).pop(),
+            )
+          : null,
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: Theme.of(context).appBarTheme.titleTextStyle, // Title style from theme
+          ),
+          if (breadcrumbs.isNotEmpty)
+            Text(
+              breadcrumbs.join(' > '),
+              style: TextStyle(
+                fontSize: 12,
+                color: Theme.of(context).appBarTheme.foregroundColor?.withOpacity(0.7), // Adjusted breadcrumb color
+              ),
+            ),
+        ],
       ),
-      backgroundColor: const Color(0xFFB8CEE4), // Your app bar color
-      elevation: 0, // No shadow
-      actions: actions, // Pass the actions to the AppBar
+      actions: [
+        if (showShoppingCart)
+          IconButton(
+            icon: const Icon(Icons.shopping_cart_outlined), // Icon color from theme
+            onPressed: onShoppingCartPressed,
+          ),
+      ],
     );
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight); // Standard AppBar height
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight + 20); // Slightly taller for breadcrumbs
 }
