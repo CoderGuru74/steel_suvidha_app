@@ -1,12 +1,11 @@
-// lib/screens/product_listing_screen.dart (White/Blue Theme)
+// lib/screens/product_listing_screen.dart (White/Blue Theme with Custom Chip Selection)
 import 'package:flutter/material.dart';
 import 'package:figma_app/widgets/custom_app_bar.dart';
 import 'package:figma_app/widgets/bottom_nav_bar.dart';
-import 'package:figma_app/widgets/custom_filter_chip.dart';
-import 'package:figma_app/widgets/product_spec_button.dart';
+import 'package:figma_app/widgets/custom_filter_chip.dart'; // Make sure this widget is correctly defined
 import 'package:figma_app/widgets/product_card.dart';
-import 'package:figma_app/screens/home_screen.dart'; // Import the new Home Screen
-import 'package:figma_app/screens/request_quote_screen.dart'; // Make sure this is present
+import 'package:figma_app/screens/home_screen.dart';
+import 'package:figma_app/screens/request_quote_screen.dart';
 
 class ProductListingScreen extends StatefulWidget {
   const ProductListingScreen({super.key});
@@ -18,9 +17,7 @@ class ProductListingScreen extends StatefulWidget {
 class _ProductListingScreenState extends State<ProductListingScreen> {
   String? _selectedMetalType;
   String? _selectedCategory;
-  String? _selectedBrandDropdown;
-  String? _selectedBrandTab = 'Primary';
-  List<String> _selectedBrands = [];
+  String? _selectedBrand;
   String? _selectedGrade;
   String? _selectedProductSize;
 
@@ -61,7 +58,6 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Background color handled by ThemeData in main.dart
       appBar: CustomAppBar(
         title: 'Steel Suvidha',
         showBackButton: true,
@@ -89,7 +85,7 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.onBackground, // Use theme text color
+                color: Theme.of(context).colorScheme.onBackground,
               ),
             ),
             const SizedBox(height: 20),
@@ -98,11 +94,11 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
-                color: Theme.of(context).colorScheme.onBackground.withOpacity(0.8), // Adjust text color
+                color: Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
               ),
             ),
             const SizedBox(height: 10),
-            _buildMetalTypeFilter(),
+            _buildMetalTypeFilter(), // This remains as existing filter chips
             const SizedBox(height: 20),
             Text(
               'Select Category',
@@ -113,7 +109,8 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
               ),
             ),
             const SizedBox(height: 10),
-            _buildCustomDropdown(
+            // This dropdown can remain a standard dropdown if you prefer, or changed to chip selection
+            _buildStandardDropdown( // Reverted to a simpler dropdown for "Category"
               value: _selectedCategory,
               hint: 'Select',
               items: ['Angles', 'TMT Rebars', 'Flats', 'Squares', 'Channel'],
@@ -141,20 +138,21 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
               ),
             ),
             const SizedBox(height: 10),
-            _buildCustomDropdown(
-              value: _selectedBrandDropdown,
-              hint: 'Select',
-              items: ['Brand A', 'Brand B', 'Brand C'],
-              onChanged: (String? newValue) {
+            _buildChipSelectionField( // Custom chip selection for Brand
+              context: context,
+              title: 'Select Brand',
+              selectedValue: _selectedBrand,
+              options: [
+                'SAIL', 'TATA', 'Jindal', 'JSW', 'VIZAG', 'Shyam Steel',
+                'SEL Tiger', 'SRMB', 'Any Primary Brand',
+                'Secondary Brand X', 'Secondary Brand Y', 'Secondary Brand Z'
+              ],
+              onChanged: (newValue) {
                 setState(() {
-                  _selectedBrandDropdown = newValue;
+                  _selectedBrand = newValue;
                 });
               },
             ),
-            const SizedBox(height: 20),
-            _buildBrandTabs(),
-            const SizedBox(height: 15),
-            _buildBrandChips(),
             const SizedBox(height: 20),
             Text(
               'Select Grade',
@@ -165,10 +163,20 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
               ),
             ),
             const SizedBox(height: 10),
-            _buildGradeChips(),
+            _buildChipSelectionField( // Custom chip selection for Grade
+              context: context,
+              title: 'Select Grade',
+              selectedValue: _selectedGrade,
+              options: ['500 D', '550 D', '600 D'],
+              onChanged: (newValue) {
+                setState(() {
+                  _selectedGrade = newValue;
+                });
+              },
+            ),
             const SizedBox(height: 20),
             Text(
-              'Select Product',
+              'Select Product Size',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
@@ -176,38 +184,60 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
               ),
             ),
             const SizedBox(height: 10),
-            _buildProductSpecButtons(),
+            _buildChipSelectionField( // Custom chip selection for Product Size
+              context: context,
+              title: 'Select Size',
+              selectedValue: _selectedProductSize,
+              options: ['6 mm', '8 mm', '10 mm', '12 mm', '16 mm', '20 mm', '25 mm', '32 mm'],
+              onChanged: (newValue) {
+                setState(() {
+                  _selectedProductSize = newValue;
+                });
+              },
+            ),
             const SizedBox(height: 30),
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Applying Filters...')),
+              child: Builder(
+                builder: (BuildContext innerContext) {
+                  return ElevatedButton(
+                    onPressed: () {
+                      ScaffoldMessenger.of(innerContext).showSnackBar(
+                        const SnackBar(content: Text('Applying Filters...')),
+                      );
+                      print('Selected Metal Type: $_selectedMetalType');
+                      print('Selected Category: $_selectedCategory');
+                      print('Selected Brand: $_selectedBrand');
+                      print('Selected Grade: $_selectedGrade');
+                      print('Selected Product Size: $_selectedProductSize');
+
+                      print('DEBUG: Current innerContext is: $innerContext');
+                      print('DEBUG: Navigator found: ${Navigator.of(innerContext).toString()}');
+
+                      Future.delayed(const Duration(milliseconds: 500), () {
+                        Navigator.push(
+                          innerContext,
+                          MaterialPageRoute(builder: (context) => const RequestQuoteScreen()),
+                        );
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF673AB7),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: const Text(
+                      'Apply Filters',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   );
-                  print('Selected Metal Type: $_selectedMetalType');
-                  print('Selected Category: $_selectedCategory');
-                  print('Selected Brand Dropdown: $_selectedBrandDropdown');
-                  print('Selected Brand Tab: $_selectedBrandTab');
-                  print('Selected Brands (Chips): $_selectedBrands');
-                  print('Selected Grade: $_selectedGrade');
-                  print('Selected Product Size: $_selectedProductSize');
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF673AB7), // Use a contrasting blue/purple for this button
-                  foregroundColor: Colors.white, // Text color on this button
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                child: const Text(
-                  'Apply Filters',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                }
               ),
             ),
             const SizedBox(height: 30),
@@ -224,7 +254,7 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
               productType: 'Carbon Steel',
               productName: 'Steel Plates',
               specs: 'Specs: 2mm, 4mm, 6mm',
-              imageUrl: 'assets/images/close-up-metallic-plates.jpg', // Using one of your provided images
+              imageUrl: 'assets/images/close-up-metallic-plates.jpg',
               onQuoteRequested: () {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Quote requested for Steel Plates')),
@@ -236,7 +266,7 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
               productType: 'Stainless Steel',
               productName: 'TMT Rebars',
               specs: 'Specs: 8mm, 10mm, 12mm',
-              imageUrl: 'assets/images/steel.png', // Using one of your provided images
+              imageUrl: 'assets/images/steel.png',
               onQuoteRequested: () {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Quote requested for TMT Rebars')),
@@ -248,7 +278,7 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
               productType: 'Aluminum',
               productName: 'Angles',
               specs: 'Specs: 25x25mm, 30x30mm',
-              imageUrl: 'assets/images/aluminum.png', // Using one of your provided images
+              imageUrl: 'assets/images/aluminum.png',
               onQuoteRequested: () {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Quote requested for Angles')),
@@ -277,7 +307,7 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
                 _selectedMetalType = selected ? 'Steel' : null;
               });
             },
-            inactiveBackgroundColor: Colors.grey.shade200, // Light grey
+            inactiveBackgroundColor: Colors.grey.shade200,
             inactiveLabelColor: Colors.black87,
           ),
         ),
@@ -313,7 +343,8 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
     );
   }
 
-  Widget _buildCustomDropdown<T>({
+  // A standard dropdown for categories (can be replaced with chip selection too)
+  Widget _buildStandardDropdown<T>({
     required T? value,
     required String hint,
     required List<T> items,
@@ -322,21 +353,21 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
       decoration: BoxDecoration(
-        color: Colors.grey.shade200, // Light grey background
+        color: Colors.grey.shade200,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.grey.shade300, width: 1), // Light border
+        border: Border.all(color: Colors.grey.shade300, width: 1),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<T>(
           value: value,
           hint: Text(
             hint,
-            style: const TextStyle(color: Colors.grey), // Grey hint text
+            style: const TextStyle(color: Colors.grey),
           ),
-          icon: const Icon(Icons.arrow_drop_down, color: Colors.black87), // Dark icon
-          dropdownColor: Colors.white, // White dropdown background
+          icon: const Icon(Icons.arrow_drop_down, color: Colors.black87),
+          dropdownColor: Colors.white,
           isExpanded: true,
-          style: const TextStyle(color: Colors.black87, fontSize: 16), // Dark text style
+          style: const TextStyle(color: Colors.black87, fontSize: 16),
           onChanged: onChanged,
           items: items.map<DropdownMenuItem<T>>((T item) {
             return DropdownMenuItem<T>(
@@ -349,133 +380,131 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
     );
   }
 
-  Widget _buildBrandTabs() {
-    return Row(
-      children: [
-        GestureDetector(
-          onTap: () {
-            setState(() {
-              _selectedBrandTab = 'Primary';
-            });
-          },
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            decoration: BoxDecoration(
-              color: _selectedBrandTab == 'Primary' ? Theme.of(context).primaryColor : Colors.transparent,
-              borderRadius: BorderRadius.circular(8),
-              border: _selectedBrandTab == 'Primary' ? null : Border.all(color: Colors.grey.shade400),
-            ),
-            child: Text(
-              'Primary',
-              style: TextStyle(
-                color: _selectedBrandTab == 'Primary' ? Colors.white : Colors.black87,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(width: 15),
-        GestureDetector(
-          onTap: () {
-            setState(() {
-              _selectedBrandTab = 'Secondary';
-            });
-          },
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            decoration: BoxDecoration(
-              color: _selectedBrandTab == 'Secondary' ? Theme.of(context).primaryColor : Colors.transparent,
-              borderRadius: BorderRadius.circular(8),
-              border: _selectedBrandTab == 'Secondary' ? null : Border.all(color: Colors.grey.shade400),
-            ),
-            child: Text(
-              'Secondary',
-              style: TextStyle(
-                color: _selectedBrandTab == 'Secondary' ? Colors.white : Colors.black87,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildBrandChips() {
-    List<String> brands = _selectedBrandTab == 'Primary'
-        ? ['SAIL', 'TATA', 'Jindal', 'JSW', 'VIZAG', 'Shyam Steel', 'SEL Tiger', 'SRMB', 'Any Primary Brand']
-        : ['Secondary Brand X', 'Secondary Brand Y', 'Secondary Brand Z'];
-
-    return Wrap(
-      spacing: 10.0,
-      runSpacing: 10.0,
-      children: brands.map<Widget>((brand) {
-        bool isSelected = _selectedBrands.contains(brand);
-        return CustomFilterChip(
-          label: brand,
-          isSelected: isSelected,
-          onSelected: (selected) {
-            setState(() {
-              if (selected) {
-                _selectedBrands.add(brand);
-              } else {
-                _selectedBrands.remove(brand);
-              }
-            });
-          },
-          inactiveBackgroundColor: Colors.grey.shade200, // Light grey
-          inactiveLabelColor: Colors.black87,
-          multiSelect: true,
+  // New widget to build the custom field that triggers the chip selection sheet
+  Widget _buildChipSelectionField({
+    required BuildContext context,
+    required String title,
+    required String? selectedValue,
+    required List<String> options,
+    required ValueChanged<String?> onChanged,
+  }) {
+    return GestureDetector(
+      onTap: () async {
+        final String? result = await _showChipSelectionSheet(
+          context: context,
+          title: title,
+          options: options,
+          selectedValue: selectedValue,
         );
-      }).toList(),
-    );
-  }
-
-  Widget _buildGradeChips() {
-    List<String> grades = ['500 D', '550 D', '600 D'];
-    return Row(
-      children: grades.map<Widget>((grade) {
-        return Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5.0),
-            child: CustomFilterChip(
-              label: grade,
-              isSelected: _selectedGrade == grade,
-              onSelected: (selected) {
-                setState(() {
-                  _selectedGrade = selected ? grade : null;
-                });
-              },
-              inactiveBackgroundColor: Colors.grey.shade200, // Light grey
-              inactiveLabelColor: Colors.black87,
+        if (result != null) {
+          onChanged(result);
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade100,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey.shade300),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: selectedValue == null
+                  ? Text(
+                      'Select',
+                      style: TextStyle(color: Colors.grey, fontSize: 16),
+                    )
+                  : Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Theme.of(context).primaryColor),
+                      ),
+                      child: Text(
+                        selectedValue,
+                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+                      ),
+                    ),
             ),
-          ),
-        );
-      }).toList(),
-    );
-  }
-
-  Widget _buildProductSpecButtons() {
-    List<String> sizes = ['6 mm', '8 mm', '10 mm', '12 mm', '16 mm', '20 mm', '25 mm', '32 mm'];
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 3.5,
-        crossAxisSpacing: 15,
-        mainAxisSpacing: 15,
+            Icon(Icons.arrow_drop_down, color: Colors.grey),
+          ],
+        ),
       ),
-      itemCount: sizes.length,
-      itemBuilder: (context, index) {
-        String size = sizes[index];
-        return ProductSpecButton(
-          label: size,
-          isSelected: _selectedProductSize == size,
-          onSelected: (selected) {
-            setState(() {
-              _selectedProductSize = selected ? size : null;
-            });
+    );
+  }
+
+  // New function to show the modal bottom sheet with horizontally arranged chips
+  Future<String?> _showChipSelectionSheet({
+    required BuildContext context,
+    required String title,
+    required List<String> options,
+    required String? selectedValue,
+  }) async {
+    String? tempSelectedValue = selectedValue;
+
+    return await showModalBottomSheet<String>(
+      context: context,
+      isScrollControlled: true, // Allows content to take more height
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
+      builder: (BuildContext sheetContext) {
+        return StatefulBuilder( // Use StatefulBuilder to allow internal state changes within the bottom sheet
+          builder: (BuildContext context, StateSetter setStateInSheet) {
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+                left: 16.0,
+                right: 16.0,
+                top: 24.0,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min, // Takes minimum space
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 20),
+                  Wrap(
+                    spacing: 10.0, // Horizontal space between chips
+                    runSpacing: 10.0, // Vertical space between lines of chips
+                    children: options.map((option) {
+                      bool isSelected = tempSelectedValue == option;
+                      return CustomFilterChip( // Using your existing CustomFilterChip
+                        label: option,
+                        isSelected: isSelected,
+                        onSelected: (selected) {
+                          setStateInSheet(() { // Update state within the sheet
+                            tempSelectedValue = selected ? option : null;
+                          });
+                        },
+                        // You can customize colors here to match your theme
+                        selectedBackgroundColor: Theme.of(context).primaryColor,
+                        selectedLabelColor: Colors.white,
+                        inactiveBackgroundColor: Colors.grey.shade200,
+                        inactiveLabelColor: Colors.black87,
+                      );
+                    }).toList(),
+                  ),
+                  const SizedBox(height: 30),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context, tempSelectedValue); // Return selected value
+                      },
+                      child: const Text('Select'),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+              ),
+            );
           },
         );
       },

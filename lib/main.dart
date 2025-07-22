@@ -11,6 +11,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('DEBUG: MyApp (MaterialApp) build method called!'); // THIS LINE IS ADDED/CONFIRMED
     return MaterialApp(
       title: 'Steel Suvidha App',
       debugShowCheckedModeBanner: false,

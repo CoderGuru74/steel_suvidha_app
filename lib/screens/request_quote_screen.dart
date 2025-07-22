@@ -1,6 +1,6 @@
-// lib/screens/request_quote_screen.dart
 import 'package:flutter/material.dart';
-import 'package:figma_app/widgets/custom_app_bar.dart'; // Make sure this import is here
+import 'package:intl/intl.dart'; // For date formatting
+import 'package:figma_app/widgets/custom_app_bar.dart'; // Assume this exists
 
 class RequestQuoteScreen extends StatefulWidget {
   const RequestQuoteScreen({super.key});
@@ -10,20 +10,22 @@ class RequestQuoteScreen extends StatefulWidget {
 }
 
 class _RequestQuoteScreenState extends State<RequestQuoteScreen> {
+  String? _selectedMetal;
+  final TextEditingController _specificationsController = TextEditingController();
   final TextEditingController _quantityController = TextEditingController();
   final TextEditingController _targetPriceController = TextEditingController();
-  final TextEditingController _deliveryAddressController = TextEditingController();
-  final TextEditingController _specificationsController = TextEditingController();
+  final TextEditingController _deliveryLocationController = TextEditingController();
+  final TextEditingController _deliveryDateController = TextEditingController();
 
-  String? _selectedRequiredMetal;
   DateTime? _selectedDeliveryDate;
 
   @override
   void dispose() {
+    _specificationsController.dispose();
     _quantityController.dispose();
     _targetPriceController.dispose();
-    _deliveryAddressController.dispose();
-    _specificationsController.dispose();
+    _deliveryLocationController.dispose();
+    _deliveryDateController.dispose();
     super.dispose();
   }
 
@@ -33,56 +35,44 @@ class _RequestQuoteScreenState extends State<RequestQuoteScreen> {
       initialDate: _selectedDeliveryDate ?? DateTime.now(),
       firstDate: DateTime.now(),
       lastDate: DateTime(2030),
-      builder: (context, child) {
-        return Theme(
-          data: ThemeData.light().copyWith(
-            primaryColor: Theme.of(context).primaryColor, // Header background
-            colorScheme: ColorScheme.light(
-              primary: Theme.of(context).primaryColor, // Selected day background
-              onPrimary: Colors.white, // Text color on selected day
-              surface: Theme.of(context).colorScheme.surface, // Background of dialog
-              onSurface: Theme.of(context).colorScheme.onSurface, // Text color on dialog background
-            ),
-            dialogBackgroundColor: Theme.of(context).colorScheme.surface,
-          ),
-          child: child!,
-        );
-      },
     );
     if (picked != null && picked != _selectedDeliveryDate) {
       setState(() {
         _selectedDeliveryDate = picked;
+        _deliveryDateController.text = DateFormat('yyyy-MM-dd').format(picked);
       });
     }
   }
 
   void _submitRequest() {
-    // Implement logic to submit the request
+    print('Request Submitted:');
+    print('Required Metal: $_selectedMetal');
+    print('Specifications: ${_specificationsController.text}');
     print('Quantity: ${_quantityController.text}');
     print('Target Price: ${_targetPriceController.text}');
-    print('Delivery Address: ${_deliveryAddressController.text}');
-    print('Required Metal: $_selectedRequiredMetal');
-    print('Specifications: ${_specificationsController.text}');
-    print('Required Delivery Date: ${_selectedDeliveryDate?.toLocal().toString().split(' ')[0]}');
+    print('Delivery Location: ${_deliveryLocationController.text}');
+    print('Delivery Date: ${_deliveryDateController.text}');
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Quote Request Submitted!')),
     );
-    // You might want to navigate back or to a confirmation screen
-    // Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Scaffold background color is managed by ThemeData.scaffoldBackgroundColor in main.dart
       appBar: CustomAppBar(
-        title: 'Request a Quote',
+        title: 'Steel Suvidha',
         showBackButton: true,
-        showShoppingCart: false,
-        breadcrumbs: const ['Products', 'Request Quote'],
+        showShoppingCart: true,
+        breadcrumbs: const ['Products', 'Request a Quote'],
         onBackButtonPressed: () {
           Navigator.pop(context);
+        },
+        onShoppingCartPressed: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Shopping Cart Pressed')),
+          );
         },
       ),
       body: SingleChildScrollView(
@@ -91,288 +81,291 @@ class _RequestQuoteScreenState extends State<RequestQuoteScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
+              'Request a Quote',
+              style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
+            Text(
               'Order Summary',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.onBackground,
-              ),
+              style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 15),
-            // Example Order Summary details - you can populate these dynamically
-            _buildSummaryRow('Quantity', '1000 units'),
-            _buildSummaryRow('Target Price', '\$80/unit'),
-            _buildSummaryRow('Delivery', '2024-07-20'), // Example, should be dynamic
-            _buildSummaryRow('Total Quantity', '10 tons'),
-            _buildSummaryRow('Estimated Cost', '\$50,000'), // Example
-
+            const SizedBox(height: 10),
+            _buildOrderSummary(),
+            const SizedBox(height: 20),
+            _buildSectionTitle('Required Metal'),
+            _buildMetalDropdown(), // This is where the styling is applied
+            const SizedBox(height: 20),
+            _buildSectionTitle('Specifications'),
+            _buildSpecificationsField(),
+            const SizedBox(height: 20),
+            _buildSectionTitle('Quantity'),
+            _buildTextField(_quantityController, 'Enter quantity', keyboardType: TextInputType.number),
+            const SizedBox(height: 20),
+            _buildSectionTitle('Target Price (Optional)'),
+            _buildTextField(_targetPriceController, 'Enter target price', keyboardType: TextInputType.number),
+            const SizedBox(height: 20),
+            _buildSectionTitle('Delivery Location'),
+            _buildTextField(_deliveryLocationController, 'Enter delivery address'),
+            const SizedBox(height: 20),
+            _buildSectionTitle('Required Delivery Date (Optional)'),
+            _buildDatePickerField(),
+            const SizedBox(height: 20),
+            _buildUploadFilesButton(),
             const SizedBox(height: 30),
-
-            Text(
-              'Required Metal',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).colorScheme.onBackground,
-              ),
-            ),
-            const SizedBox(height: 10),
-            _buildCustomDropdown<String>(
-              value: _selectedRequiredMetal,
-              hint: 'Select required metal',
-              items: ['Steel', 'Aluminum', 'Copper', 'Brass'],
-              onChanged: (String? newValue) {
-                setState(() {
-                  _selectedRequiredMetal = newValue;
-                });
-              },
-            ),
-
-            const SizedBox(height: 20),
-
-            Text(
-              'Specifications',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).colorScheme.onBackground,
-              ),
-            ),
-            const SizedBox(height: 10),
-            TextField(
-              controller: _specificationsController,
-              maxLines: 5,
-              decoration: InputDecoration(
-                hintText: 'Enter specifications (e.g., grade, finish, dimensions, standards)',
-                alignLabelWithHint: true,
-              ),
-              style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
-            ),
-
-            const SizedBox(height: 20),
-
-            Text(
-              'Quantity',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).colorScheme.onBackground,
-              ),
-            ),
-            const SizedBox(height: 10),
-            TextField(
-              controller: _quantityController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                hintText: 'Enter quantity',
-              ),
-              style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
-            ),
-
-            const SizedBox(height: 20),
-
-            Text(
-              'Target Price (Optional)',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).colorScheme.onBackground,
-              ),
-            ),
-            const SizedBox(height: 10),
-            TextField(
-              controller: _targetPriceController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                hintText: 'Enter target price',
-              ),
-              style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
-            ),
-
-            const SizedBox(height: 20),
-
-            Text(
-              'Delivery Location',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).colorScheme.onBackground,
-              ),
-            ),
-            const SizedBox(height: 10),
-            TextField(
-              controller: _deliveryAddressController,
-              decoration: InputDecoration(
-                hintText: 'Enter delivery address',
-              ),
-              style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
-            ),
-
-            const SizedBox(height: 20),
-
-            Text(
-              'Required Delivery Date (Optional)',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).colorScheme.onBackground,
-              ),
-            ),
-            const SizedBox(height: 10),
-            GestureDetector(
-              onTap: () => _selectDate(context),
-              child: AbsorbPointer(
-                child: TextField(
-                  readOnly: true,
-                  decoration: InputDecoration(
-                    hintText: _selectedDeliveryDate == null
-                        ? 'Select date'
-                        : _selectedDeliveryDate!.toLocal().toString().split(' ')[0],
-                    suffixIcon: Icon(Icons.calendar_today, color: Theme.of(context).primaryColor),
-                  ),
-                  style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 30),
-
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  // TODO: Implement file upload logic
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Upload Files functionality coming soon!')),
-                  );
-                },
-                icon: const Icon(Icons.cloud_upload_outlined, color: Colors.white),
-                label: const Text(
-                  'Upload Files',
-                  style: TextStyle(fontSize: 18, color: Colors.white),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey.shade600, // A neutral color for upload button
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: _submitRequest,
-                child: const Text(
-                  'Submit Request',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
+                child: const Text('Submit Request'),
               ),
             ),
-
             const SizedBox(height: 30),
-
-            Text(
-              'How it Works',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.onBackground,
-              ),
-            ),
-            const SizedBox(height: 15),
-            _buildHowItWorksStep(Icons.receipt_long, 'Your request will be reviewed by our team, and you\'ll receive quotes from verified suppliers within 24 hours.'),
-            _buildHowItWorksStep(Icons.notifications_active_outlined, 'We\'ll notify you via email and in-app notifications.'),
-
-            const SizedBox(height: 20),
+            _buildHowItWorksSection(),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildSummaryRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              color: Theme.of(context).colorScheme.onBackground.withOpacity(0.7),
-            ),
-          ),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.onBackground,
-            ),
-          ),
-        ],
-      ),
+  Widget _buildOrderSummary() {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(child: _buildSummaryItem('Quantity', '1000 units')),
+            Expanded(child: _buildSummaryItem('Target Price', '\$50/unit')),
+          ],
+        ),
+        const Divider(height: 20, thickness: 1),
+        Row(
+          children: [
+            Expanded(child: _buildSummaryItem('Delivery', '2024-07-20')),
+            Expanded(child: _buildSummaryItem('Total Quantity', '10 tons')),
+          ],
+        ),
+        const Divider(height: 20, thickness: 1),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: _buildSummaryItem('Estimated Cost', '\$50,000'),
+        ),
+        const Divider(height: 20, thickness: 1),
+      ],
     );
   }
 
-  Widget _buildCustomDropdown<T>({
-    required T? value,
-    required String hint,
-    required List<T> items,
-    required ValueChanged<T?> onChanged,
-  }) {
+  Widget _buildSummaryItem(String title, String value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.grey),
+        ),
+        Text(
+          value,
+          style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Text(
+      title,
+      style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w600),
+    );
+  }
+
+  Widget _buildMetalDropdown() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4), // Adjusted vertical padding
       decoration: BoxDecoration(
-        color: Colors.grey.shade200, // Light grey background
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.grey.shade300, width: 1), // Light border
+        color: Colors.grey.shade100,
+        borderRadius: BorderRadius.circular(12), // Rounded corners for the container
+        border: Border.all(color: Colors.grey.shade300),
       ),
       child: DropdownButtonHideUnderline(
-        child: DropdownButton<T>(
-          value: value,
-          hint: Text(
-            hint,
-            style: const TextStyle(color: Colors.grey),
-          ),
-          icon: const Icon(Icons.arrow_drop_down, color: Colors.black87),
-          dropdownColor: Colors.white,
+        child: DropdownButton<String>(
           isExpanded: true,
-          style: const TextStyle(color: Colors.black87, fontSize: 16),
-          onChanged: onChanged,
-          items: items.map<DropdownMenuItem<T>>((T item) {
-            return DropdownMenuItem<T>(
-              value: item,
-              child: Text(item.toString()),
+          value: _selectedMetal,
+          hint: Text(
+            'Select',
+            style: TextStyle(color: Colors.grey),
+          ),
+          icon: Icon(Icons.arrow_drop_down, color: Colors.grey),
+          onChanged: (String? newValue) {
+            setState(() {
+              _selectedMetal = newValue;
+            });
+          },
+          items: <String>['Steel', 'Stainless Steel', 'Aluminum', 'Copper']
+              .map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              // Apply styling to the child of DropdownMenuItem to make it look like a chip
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  color: value == _selectedMetal ? Theme.of(context).primaryColor : Colors.grey.shade200, // Background color based on selection
+                  borderRadius: BorderRadius.circular(8), // Rounded corners for the "chip"
+                  border: Border.all(
+                    color: value == _selectedMetal ? Theme.of(context).primaryColor : Colors.grey.shade300,
+                  ),
+                ),
+                child: Text(
+                  value,
+                  style: TextStyle(
+                    color: value == _selectedMetal ? Colors.white : Colors.black87, // Text color
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
             );
           }).toList(),
+          selectedItemBuilder: (BuildContext context) {
+            // This builder is for what is shown in the closed dropdown button
+            return <String>['Steel', 'Stainless Steel', 'Aluminum', 'Copper']
+                .map<Widget>((String value) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: value == _selectedMetal ? Theme.of(context).primaryColor : Colors.grey.shade200,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: value == _selectedMetal ? Theme.of(context).primaryColor : Colors.grey.shade300,
+                    ),
+                  ),
+                  child: Text(
+                    value,
+                    style: TextStyle(
+                      color: value == _selectedMetal ? Colors.white : Colors.black87,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              );
+            }).toList();
+          },
         ),
       ),
     );
   }
 
-  Widget _buildHowItWorksStep(IconData icon, String text) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(icon, color: Theme.of(context).primaryColor, size: 28),
-          const SizedBox(width: 15),
-          Expanded(
-            child: Text(
-              text,
-              style: TextStyle(color: Theme.of(context).colorScheme.onBackground, fontSize: 16),
-            ),
-          ),
-        ],
+  Widget _buildSpecificationsField() {
+    return TextField(
+      controller: _specificationsController,
+      maxLines: 5,
+      decoration: InputDecoration(
+        hintText: 'Enter specifications',
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey.shade300),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey.shade300),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 2),
+        ),
+        fillColor: Colors.grey.shade100,
+        filled: true,
       ),
+    );
+  }
+
+  Widget _buildTextField(TextEditingController controller, String hintText, {TextInputType keyboardType = TextInputType.text}) {
+    return TextField(
+      controller: controller,
+      keyboardType: keyboardType,
+      decoration: InputDecoration(
+        hintText: hintText,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey.shade300),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey.shade300),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 2),
+        ),
+        fillColor: Colors.grey.shade100,
+        filled: true,
+      ),
+    );
+  }
+
+  Widget _buildDatePickerField() {
+    return TextField(
+      controller: _deliveryDateController,
+      readOnly: true,
+      onTap: () => _selectDate(context),
+      decoration: InputDecoration(
+        hintText: 'Select date',
+        suffixIcon: Icon(Icons.calendar_today, color: Colors.grey),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey.shade300),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey.shade300),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 2),
+        ),
+        fillColor: Colors.grey.shade100,
+        filled: true,
+      ),
+    );
+  }
+
+  Widget _buildUploadFilesButton() {
+    return SizedBox(
+      width: double.infinity,
+      child: OutlinedButton.icon(
+        onPressed: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Upload Files Pressed')),
+          );
+          // Implement file upload logic here
+        },
+        icon: const Icon(Icons.cloud_upload_outlined),
+        label: const Text('Upload Files'),
+        style: OutlinedButton.styleFrom(
+          foregroundColor: Colors.black87,
+          side: BorderSide(color: Colors.grey.shade400),
+          padding: const EdgeInsets.symmetric(vertical: 15),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          backgroundColor: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHowItWorksSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'How it Works',
+          style: Theme.of(context).textTheme.headlineSmall!.copyWith(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 10),
+        Text(
+          'Your request will be reviewed by our team, and you\'ll receive quotes from verified suppliers within 24 hours. We\'ll notify you via email and in-app notifications.',
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+      ],
     );
   }
 }
