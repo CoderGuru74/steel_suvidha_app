@@ -1,15 +1,16 @@
+// lib/widgets/feature_card.dart
 import 'package:flutter/material.dart';
 
 class FeatureCard extends StatelessWidget {
   final String title;
-  final String description;
   final IconData icon;
+  final VoidCallback onTap; // Add this line
 
   const FeatureCard({
     super.key,
     required this.title,
-    required this.description,
     required this.icon,
+    required this.onTap, // Add this line
   });
 
   @override
@@ -17,25 +18,26 @@ class FeatureCard extends StatelessWidget {
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            Icon(icon, size: 32, color: Colors.blueGrey),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title,
-                      style:
-                          const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 6),
-                  Text(description, style: const TextStyle(fontSize: 14)),
-                ],
+      child: InkWell( // Use InkWell to make the card tappable
+        borderRadius: BorderRadius.circular(12),
+        onTap: onTap, // Pass the onTap callback here
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 40, color: Theme.of(context).primaryColor),
+              const SizedBox(height: 10),
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.onBackground,
+                    ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

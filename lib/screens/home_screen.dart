@@ -4,6 +4,8 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:figma_app/screens/product_listing_screen.dart'; // To navigate to product listing
 import 'package:figma_app/widgets/custom_app_bar.dart';
 import 'package:figma_app/widgets/bottom_nav_bar.dart';
+// Note: feature_card.dart is not directly used in this new HomeScreen layout,
+// so it's not imported here. If other screens use it, ensure its definition is correct.
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -60,6 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
         showBackButton: false,
         showShoppingCart: true,
         breadcrumbs: const ['Home'],
+        // onBackButtonPressed is not needed when showBackButton is false
         onShoppingCartPressed: () {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Shopping Cart Pressed')),
