@@ -1,71 +1,23 @@
-// lib/screens/home_screen.dart (Corrected Buyer Homepage - White/Blue Theme)
+// lib/screens/home_screen.dart (Now contains only the content for the Home tab)
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:figma_app/screens/product_listing_screen.dart'; // To navigate to product listing
 import 'package:figma_app/widgets/custom_app_bar.dart';
-import 'package:figma_app/widgets/bottom_nav_bar.dart';
-// Note: feature_card.dart is not directly used in this new HomeScreen layout,
-// so it's not imported here. If other screens use it, ensure its definition is correct.
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  int _selectedIndex = 0; // Set to 0 for Home tab
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-
-    // Handle navigation based on the tapped item
-    switch (index) {
-      case 0: // Home tab (this screen)
-        break;
-      case 1: // Products tab
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const ProductListingScreen()),
-        );
-        break;
-      case 2: // Requests tab
-      // TODO: Navigate to Requests screen
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Navigate to Requests')),
-        );
-        break;
-      case 3: // Orders tab
-      // TODO: Navigate to Orders screen
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Navigate to Orders')),
-        );
-        break;
-      case 4: // Profile tab
-      // TODO: Navigate to Profile screen
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Navigate to Profile')),
-        );
-        break;
-    }
-  }
+// Renamed from HomeScreen to HomeScreenContent as it's now part of BuyerMainScreen
+class HomeScreenContent extends StatelessWidget {
+  const HomeScreenContent({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // Background color handled by ThemeData in main.dart
+    return Scaffold( // Keep Scaffold for its own AppBar
       appBar: CustomAppBar(
-        title: 'Steel Suvidha',
-        showBackButton: false,
+        title: 'Steel Suvidha', // Your app title
+        showBackButton: false, // No back button on the main home tab
         showShoppingCart: true,
         breadcrumbs: const ['Home'],
-        // onBackButtonPressed is not needed when showBackButton is false
         onShoppingCartPressed: () {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Shopping Cart Pressed')),
+            const SnackBar(content: Text('Shopping Cart Pressed from Home')),
           );
         },
       ),
@@ -83,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: 250,
                   errorBuilder: (context, error, stackTrace) => Container(
                     height: 250,
-                    color: Colors.grey.shade300, // Lighter placeholder
+                    color: Colors.grey.shade300,
                     child: Center(
                       child: Text('Main Banner Image Missing', style: TextStyle(color: Theme.of(context).colorScheme.onBackground.withOpacity(0.7))),
                     ),
@@ -91,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 Positioned.fill(
                   child: Container(
-                    color: Colors.black.withOpacity(0.4), // Keep dark overlay for text contrast
+                    color: Colors.black.withOpacity(0.4),
                   ),
                 ),
                 Positioned(
@@ -106,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         const Text(
                           'Find the Steel You\nNeed, Fast.',
                           style: TextStyle(
-                            color: Colors.white, // Keep white text on dark overlay
+                            color: Colors.white,
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
                           ),
@@ -115,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         const Text(
                           'Connect with verified suppliers and request steel with ease.',
                           style: TextStyle(
-                            color: Colors.white70, // Keep white text on dark overlay
+                            color: Colors.white70,
                             fontSize: 14,
                           ),
                         ).animate().fadeIn(duration: 600.ms, delay: 400.ms).slideX(begin: -0.1, end: 0),
@@ -127,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ).animate().fadeIn(duration: 800.ms),
             const SizedBox(height: 20),
 
-            // Search Bar & Request a Quote Button (outside of banner image)
+            // Search Bar & Request a Quote Button
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
@@ -135,17 +87,17 @@ class _HomeScreenState extends State<HomeScreen> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 15),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surface, // Use theme surface color
+                      color: Theme.of(context).colorScheme.surface,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.grey.shade300), // Light border
+                      border: Border.all(color: Colors.grey.shade300),
                     ),
                     child: TextField(
-                      style: TextStyle(color: Theme.of(context).colorScheme.onSurface), // Use theme text color
+                      style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                       decoration: InputDecoration(
                         hintText: 'Search for metal type, shape, grade, quantity...',
-                        hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)), // Adjust hint color
-                        icon: Icon(Icons.search, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7)), // Adjust icon color
-                        border: InputBorder.none, // Remove default TextField border
+                        hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)),
+                        icon: Icon(Icons.search, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7)),
+                        border: InputBorder.none,
                       ),
                     ),
                   ).animate().fadeIn(duration: 600.ms, delay: 600.ms).slideY(begin: 0.1, end: 0),
@@ -158,7 +110,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           const SnackBar(content: Text('Requesting a Quote...')),
                         );
                       },
-                      // Colors handled by ElevatedButtonTheme in main.dart
                       child: const Text(
                         'Request a Quote',
                         style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -178,7 +129,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.onBackground, // Use theme text color
+                  color: Theme.of(context).colorScheme.onBackground,
                 ),
               ).animate().fadeIn(duration: 600.ms, delay: 1000.ms),
             ),
@@ -189,13 +140,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 children: [
-                  _buildCategoryCard('Steel', 'assets/images/steel.png'),
+                  _buildCategoryCard(context, 'Steel', 'assets/images/steel.png'),
                   const SizedBox(width: 15),
-                  _buildCategoryCard('Aluminum', 'assets/images/aluminum.png'),
+                  _buildCategoryCard(context, 'Aluminum', 'assets/images/aluminum.png'),
                   const SizedBox(width: 15),
-                  _buildCategoryCard('Copper', 'assets/images/copper.png'),
+                  _buildCategoryCard(context, 'Copper', 'assets/images/copper.png'),
                   const SizedBox(width: 15),
-                  _buildCategoryCard('Plates', 'assets/images/close-up-metallic-plates.jpg'),
+                  _buildCategoryCard(context, 'Plates', 'assets/images/close-up-metallic-plates.jpg'),
                   const SizedBox(width: 15),
                 ].animate(interval: 100.ms).fadeIn(duration: 400.ms, delay: 1200.ms).slideX(begin: 0.1, end: 0),
               ),
@@ -213,15 +164,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.onBackground, // Use theme text color
+                      color: Theme.of(context).colorScheme.onBackground,
                     ),
                   ).animate().fadeIn(duration: 600.ms, delay: 1400.ms),
                   const SizedBox(height: 20),
                   ...[
-                    _buildHowItWorksStep(Icons.edit_note, 'Submit Request'),
-                    _buildHowItWorksStep(Icons.receipt_long, 'Get Quotes'),
-                    _buildHowItWorksStep(Icons.check_circle_outline, 'Choose & Order'),
-                    _buildHowItWorksStep(Icons.local_shipping_outlined, 'Receive Delivery'),
+                    _buildHowItWorksStep(context, Icons.edit_note, 'Submit Request'),
+                    _buildHowItWorksStep(context, Icons.receipt_long, 'Get Quotes'),
+                    _buildHowItWorksStep(context, Icons.check_circle_outline, 'Choose & Order'),
+                    _buildHowItWorksStep(context, Icons.local_shipping_outlined, 'Receive Delivery'),
                   ].animate(interval: 100.ms).fadeIn(duration: 400.ms, delay: 1600.ms).slideX(begin: -0.05, end: 0),
                 ],
               ),
@@ -239,7 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.onBackground, // Use theme text color
+                      color: Theme.of(context).colorScheme.onBackground,
                     ),
                   ).animate().fadeIn(duration: 600.ms, delay: 1800.ms),
                   const SizedBox(height: 20),
@@ -250,10 +201,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     children: [
-                      _buildWhyChooseUsCard(Icons.verified_user_outlined, 'Trusted Suppliers'),
-                      _buildWhyChooseUsCard(Icons.timer_outlined, 'Quick Response Time'),
-                      _buildWhyChooseUsCard(Icons.verified, 'Quality Assurance'),
-                      _buildWhyChooseUsCard(Icons.local_shipping_outlined, 'Reliable Delivery'),
+                      _buildWhyChooseUsCard(context, Icons.verified_user_outlined, 'Trusted Suppliers'),
+                      _buildWhyChooseUsCard(context, Icons.timer_outlined, 'Quick Response Time'),
+                      _buildWhyChooseUsCard(context, Icons.verified, 'Quality Assurance'),
+                      _buildWhyChooseUsCard(context, Icons.local_shipping_outlined, 'Reliable Delivery'),
                     ].animate(interval: 100.ms).fadeIn(duration: 400.ms, delay: 2000.ms).scale(begin: const Offset(0.9,0.9), end: const Offset(1.0,1.0)),
                   ),
                 ],
@@ -265,7 +216,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Container(
               padding: const EdgeInsets.all(24.0),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface, // Use theme surface color
+                color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.circular(15),
               ),
               child: Column(
@@ -275,7 +226,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.onSurface, // Use theme text color
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -285,7 +236,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w600,
-                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7), // Adjust text color
+                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -298,7 +249,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           const SnackBar(content: Text('Requesting a Quote from bottom button...')),
                         );
                       },
-                      // Colors handled by ElevatedButtonTheme in main.dart
                       child: const Text(
                         'Request a Quote',
                         style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -312,15 +262,11 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavBar(
-        selectedIndex: _selectedIndex,
-        onItemTapped: _onItemTapped,
-      ),
     );
   }
 
-  // Helper method for Featured Categories cards
-  Widget _buildCategoryCard(String title, String imagePath) {
+  // Helper method for Featured Categories cards - now takes BuildContext
+  Widget _buildCategoryCard(BuildContext context, String title, String imagePath) {
     return GestureDetector(
       onTap: () {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -328,13 +274,13 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       },
       child: Container(
-        width: 150, // Fixed width for horizontal scroll
+        width: 150,
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface, // Use theme surface color
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1), // Lighter shadow
+              color: Colors.black.withOpacity(0.1),
               blurRadius: 10,
               offset: const Offset(0, 5),
             ),
@@ -350,9 +296,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   width: double.infinity,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) => Container(
-                    color: Colors.grey.shade300, // Lighter placeholder
+                    color: Colors.grey.shade300,
                     child: Center(
-                      child: Icon(Icons.broken_image, color: Colors.grey.shade600, size: 40), // Darker placeholder icon
+                      child: Icon(Icons.broken_image, color: Colors.grey.shade600, size: 40),
                     ),
                   ),
                 ),
@@ -364,7 +310,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 title,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Theme.of(context).colorScheme.onSurface, // Use theme text color
+                  color: Theme.of(context).colorScheme.onSurface,
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
                 ),
@@ -376,33 +322,33 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Helper method for "How It Works" steps
-  Widget _buildHowItWorksStep(IconData icon, String text) {
+  // Helper method for "How It Works" steps - now takes BuildContext
+  Widget _buildHowItWorksStep(BuildContext context, IconData icon, String text) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
         children: [
-          Icon(icon, color: Theme.of(context).primaryColor, size: 30), // Use theme primary color for icons
+          Icon(icon, color: Theme.of(context).primaryColor, size: 30),
           const SizedBox(width: 15),
           Text(
             text,
-            style: TextStyle(color: Theme.of(context).colorScheme.onBackground, fontSize: 18), // Use theme text color
+            style: TextStyle(color: Theme.of(context).colorScheme.onBackground, fontSize: 18),
           ),
         ],
       ),
     );
   }
 
-  // Helper method for "Why Choose Us" cards
-  Widget _buildWhyChooseUsCard(IconData icon, String text) {
+  // Helper method for "Why Choose Us" cards - now takes BuildContext
+  Widget _buildWhyChooseUsCard(BuildContext context, IconData icon, String text) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface, // Use theme surface color
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1), // Lighter shadow
+            color: Colors.black.withOpacity(0.1),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -411,13 +357,13 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, color: Theme.of(context).primaryColor, size: 40), // Use theme primary color for icons
+          Icon(icon, color: Theme.of(context).primaryColor, size: 40),
           const SizedBox(height: 10),
           Text(
             text,
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: Theme.of(context).colorScheme.onSurface, // Use theme text color
+              color: Theme.of(context).colorScheme.onSurface,
               fontWeight: FontWeight.w600,
               fontSize: 16,
             ),

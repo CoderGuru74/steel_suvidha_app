@@ -1,14 +1,11 @@
-// lib/screens/product_listing_screen.dart (White/Blue Theme with Custom Chip Selection)
+// lib/screens/product_listing_screen.dart
 import 'package:flutter/material.dart';
-import 'package:figma_app/widgets/custom_app_bar.dart';
-import 'package:figma_app/widgets/bottom_nav_bar.dart';
-import 'package:figma_app/widgets/custom_filter_chip.dart'; // Make sure this widget is correctly defined
-import 'package:figma_app/widgets/product_card.dart';
-import 'package:figma_app/screens/home_screen.dart';
-import 'package:figma_app/screens/request_quote_screen.dart';
+import 'package:figma_app/screens/request_quote_screen.dart'; // Import the new RequestQuoteScreen
 
 class ProductListingScreen extends StatefulWidget {
-  const ProductListingScreen({super.key});
+  final String category;
+
+  const ProductListingScreen({super.key, required this.category});
 
   @override
   State<ProductListingScreen> createState() => _ProductListingScreenState();
@@ -21,59 +18,77 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
   String? _selectedGrade;
   String? _selectedProductSize;
 
-  int _selectedIndex = 1; // Set to 1 for Products tab
+  final List<String> _metalTypes = ['Steel', 'Stainless Steel', 'Aluminum'];
+  final List<String> _categories = ['Angles', 'TMT Rebars', 'Flats', 'Squares', 'Channel', 'Plates'];
+  final List<String> _brands = ['SAIL', 'TATA', 'Jindal', 'JSW', 'VIZAG', 'Shyam Steel', 'SEL Tiger', 'SRMB', 'Any Primary Brand'];
+  final List<String> _grades = ['500 D', '550 D', '600 D', '415', '415 D', '500'];
+  final List<String> _productSizes = [
+    '6 mm', '8 mm', '10 mm', '12 mm', '16 mm', '20 mm', '25 mm', '32 mm',
+    '40 mm', '50 mm', '60 mm', '75 mm', '100 mm',
+  ];
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-
-    switch (index) {
-      case 0:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
-        );
-        break;
-      case 1:
-        break;
-      case 2:
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Navigate to Requests')),
-        );
-        break;
-      case 3:
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Navigate to Orders')),
-        );
-        break;
-      case 4:
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Navigate to Profile')),
-        );
-        break;
+  @override
+  void initState() {
+    super.initState();
+    _selectedMetalType = widget.category;
+    if (widget.category == 'Steel') {
+      _selectedCategory = 'Plates';
     }
+  }
+
+  Widget _buildChoiceChip(String label, String? selectedValue, ValueChanged<bool> onSelected) {
+    return ChoiceChip(
+      label: Text(label),
+      selected: selectedValue == label,
+      onSelected: onSelected,
+      selectedColor: Theme.of(context).primaryColor.withOpacity(0.2),
+      labelStyle: TextStyle(
+        color: selectedValue == label ? Theme.of(context).primaryColor : Colors.black87,
+        fontWeight: FontWeight.w500,
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+        side: BorderSide(
+          color: selectedValue == label ? Theme.of(context).primaryColor : Colors.grey.shade300,
+        ),
+      ),
+      backgroundColor: Colors.white,
+      elevation: 1,
+    );
+  }
+
+  Widget _buildFilterExpansionTile({
+    required String title,
+    required List<String> options,
+    required String? selectedValue,
+    required ValueChanged<String?> onSelected,
+  }) {
+    return Theme(
+      data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+      child: ExpansionTile(
+        title: Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+        tilePadding: EdgeInsets.zero,
+        childrenPadding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 8.0),
+        children: [
+          Wrap(
+            spacing: 8.0,
+            runSpacing: 8.0,
+            children: options.map((option) => _buildChoiceChip(option, selectedValue, (bool selected) {
+              onSelected(selected ? option : null);
+            })).toList(),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        title: 'Steel Suvidha',
-        showBackButton: true,
-        showShoppingCart: true,
-        breadcrumbs: const ['Home', 'Products'],
-        onBackButtonPressed: () {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const HomeScreen()),
-          );
-        },
-        onShoppingCartPressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Shopping Cart Pressed')),
-          );
-        },
+      appBar: AppBar(
+        title: Text('${widget.category} Products'),
+        backgroundColor: Theme.of(context).primaryColor,
+        foregroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -81,433 +96,192 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
+              'Home > Products > ${widget.category} > ${_selectedCategory ?? ''}',
+              style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
+            ),
+            const SizedBox(height: 20),
+            const Text(
               'Filters',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.onBackground,
-              ),
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
-            Text(
-              'Metal Type',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
-              ),
-            ),
+
+            const Text('Metal Type', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
             const SizedBox(height: 10),
-            _buildMetalTypeFilter(), // This remains as existing filter chips
-            const SizedBox(height: 20),
-            Text(
-              'Select Category',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
-              ),
-            ),
-            const SizedBox(height: 10),
-            // This dropdown can remain a standard dropdown if you prefer, or changed to chip selection
-            _buildStandardDropdown( // Reverted to a simpler dropdown for "Category"
-              value: _selectedCategory,
-              hint: 'Select',
-              items: ['Angles', 'TMT Rebars', 'Flats', 'Squares', 'Channel'],
-              onChanged: (String? newValue) {
+            Wrap(
+              spacing: 8.0,
+              runSpacing: 8.0,
+              children: _metalTypes.map((type) => _buildChoiceChip(type, _selectedMetalType, (bool selected) {
                 setState(() {
-                  _selectedCategory = newValue;
+                  _selectedMetalType = selected ? type : null;
+                });
+              })).toList(),
+            ),
+            const SizedBox(height: 20),
+
+            const Text('Select Category', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+            const SizedBox(height: 10),
+            DropdownButtonFormField<String>(
+              value: _selectedCategory,
+              decoration: InputDecoration(
+                hintText: 'Select...',
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              items: _categories.map((category) {
+                return DropdownMenuItem(value: category, child: Text(category));
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  _selectedCategory = value;
                 });
               },
             ),
             const SizedBox(height: 8),
             Text(
-              'Categories: Angles, TMT Rebars, Flats, Squares, Channel',
-              style: TextStyle(
-                fontSize: 14,
-                color: Theme.of(context).colorScheme.onBackground.withOpacity(0.6),
-              ),
+              'Categories: Angles, TMT Rebars, Flats, Squares, Channel, Plates',
+              style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
             ),
             const SizedBox(height: 20),
-            Text(
-              'Select Brand',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
-              ),
-            ),
-            const SizedBox(height: 10),
-            _buildChipSelectionField( // Custom chip selection for Brand
-              context: context,
+
+            _buildFilterExpansionTile(
               title: 'Select Brand',
+              options: _brands,
               selectedValue: _selectedBrand,
-              options: [
-                'SAIL', 'TATA', 'Jindal', 'JSW', 'VIZAG', 'Shyam Steel',
-                'SEL Tiger', 'SRMB', 'Any Primary Brand',
-                'Secondary Brand X', 'Secondary Brand Y', 'Secondary Brand Z'
-              ],
-              onChanged: (newValue) {
+              onSelected: (value) {
                 setState(() {
-                  _selectedBrand = newValue;
+                  _selectedBrand = value;
                 });
               },
             ),
             const SizedBox(height: 20),
-            Text(
-              'Select Grade',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
-              ),
-            ),
-            const SizedBox(height: 10),
-            _buildChipSelectionField( // Custom chip selection for Grade
-              context: context,
+
+            _buildFilterExpansionTile(
               title: 'Select Grade',
+              options: _grades,
               selectedValue: _selectedGrade,
-              options: ['500 D', '550 D', '600 D'],
-              onChanged: (newValue) {
+              onSelected: (value) {
                 setState(() {
-                  _selectedGrade = newValue;
+                  _selectedGrade = value;
                 });
               },
             ),
             const SizedBox(height: 20),
-            Text(
-              'Select Product Size',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
-              ),
-            ),
-            const SizedBox(height: 10),
-            _buildChipSelectionField( // Custom chip selection for Product Size
-              context: context,
-              title: 'Select Size',
+
+            _buildFilterExpansionTile(
+              title: 'Select Product',
+              options: _productSizes,
               selectedValue: _selectedProductSize,
-              options: ['6 mm', '8 mm', '10 mm', '12 mm', '16 mm', '20 mm', '25 mm', '32 mm'],
-              onChanged: (newValue) {
+              onSelected: (value) {
                 setState(() {
-                  _selectedProductSize = newValue;
+                  _selectedProductSize = value;
                 });
               },
             ),
             const SizedBox(height: 30),
+
             SizedBox(
               width: double.infinity,
-              child: Builder(
-                builder: (BuildContext innerContext) {
-                  return ElevatedButton(
-                    onPressed: () {
-                      ScaffoldMessenger.of(innerContext).showSnackBar(
-                        const SnackBar(content: Text('Applying Filters...')),
-                      );
-                      print('Selected Metal Type: $_selectedMetalType');
-                      print('Selected Category: $_selectedCategory');
-                      print('Selected Brand: $_selectedBrand');
-                      print('Selected Grade: $_selectedGrade');
-                      print('Selected Product Size: $_selectedProductSize');
-
-                      print('DEBUG: Current innerContext is: $innerContext');
-                      print('DEBUG: Navigator found: ${Navigator.of(innerContext).toString()}');
-
-                      Future.delayed(const Duration(milliseconds: 500), () {
-                        Navigator.push(
-                          innerContext,
-                          MaterialPageRoute(builder: (context) => const RequestQuoteScreen()),
-                        );
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF673AB7),
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: const Text(
-                      'Apply Filters',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+              height: 50,
+              child: ElevatedButton(
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Applying filters... (Actual filtering logic needed)')),
                   );
-                }
+                },
+                child: const Text('Apply Filters', style: TextStyle(fontSize: 18)),
               ),
             ),
             const SizedBox(height: 30),
-            Text(
+
+            const Text(
               'Products',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.onBackground,
-              ),
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
-            ProductCard(
-              productType: 'Carbon Steel',
-              productName: 'Steel Plates',
-              specs: 'Specs: 2mm, 4mm, 6mm',
-              imageUrl: 'assets/images/close-up-metallic-plates.jpg',
-              onQuoteRequested: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Quote requested for Steel Plates')),
-                );
-              },
-            ),
-            const SizedBox(height: 15),
-            ProductCard(
-              productType: 'Stainless Steel',
-              productName: 'TMT Rebars',
-              specs: 'Specs: 8mm, 10mm, 12mm',
-              imageUrl: 'assets/images/steel.png',
-              onQuoteRequested: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Quote requested for TMT Rebars')),
-                );
-              },
-            ),
-            const SizedBox(height: 15),
-            ProductCard(
-              productType: 'Aluminum',
-              productName: 'Angles',
-              specs: 'Specs: 25x25mm, 30x30mm',
-              imageUrl: 'assets/images/aluminum.png',
-              onQuoteRequested: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Quote requested for Angles')),
+
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: 3,
+              itemBuilder: (context, index) {
+                // Determine a dummy product name for demonstration
+                String dummyProductName = (_selectedCategory != null && _selectedCategory!.isNotEmpty)
+                    ? 'Carbon Steel - ${_selectedCategory!} ${index + 1}'
+                    : 'Carbon Steel Plate ${index + 1}';
+
+                return Card(
+                  margin: const EdgeInsets.only(bottom: 16.0),
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 100,
+                          height: 100,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: Colors.grey.shade200,
+                          ),
+                          child: (index % 2 == 0)
+                              ? Image.asset('assets/images/steel_plate_placeholder.png', fit: BoxFit.cover, errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image, size: 50))
+                              : Image.asset('assets/images/product_placeholder.png', fit: BoxFit.cover, errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image, size: 50)),
+                        ),
+                        const SizedBox(width: 15),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                dummyProductName, // Use dummy product name here
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 5),
+                              Text(
+                                'Specs: ${3 - index}mm, ${6 - index}mm, ${9 - index}mm',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey.shade600,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              SizedBox(
+                                width: double.infinity,
+                                child: OutlinedButton(
+                                  onPressed: () {
+                                    // Navigate to RequestQuoteScreen, passing product name
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => RequestQuoteScreen(productName: dummyProductName),
+                                      ),
+                                    );
+                                  },
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: Theme.of(context).primaryColor,
+                                    side: BorderSide(color: Theme.of(context).primaryColor),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                  ),
+                                  child: const Text('Request Quote'),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 );
               },
             ),
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavBar(
-        selectedIndex: _selectedIndex,
-        onItemTapped: _onItemTapped,
-      ),
-    );
-  }
-
-  Widget _buildMetalTypeFilter() {
-    return Row(
-      children: [
-        Expanded(
-          child: CustomFilterChip(
-            label: 'Steel',
-            isSelected: _selectedMetalType == 'Steel',
-            onSelected: (selected) {
-              setState(() {
-                _selectedMetalType = selected ? 'Steel' : null;
-              });
-            },
-            inactiveBackgroundColor: Colors.grey.shade200,
-            inactiveLabelColor: Colors.black87,
-          ),
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: CustomFilterChip(
-            label: 'Stainless Steel',
-            isSelected: _selectedMetalType == 'Stainless Steel',
-            onSelected: (selected) {
-              setState(() {
-                _selectedMetalType = selected ? 'Stainless Steel' : null;
-              });
-            },
-            inactiveBackgroundColor: Colors.grey.shade200,
-            inactiveLabelColor: Colors.black87,
-          ),
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: CustomFilterChip(
-            label: 'Aluminum',
-            isSelected: _selectedMetalType == 'Aluminum',
-            onSelected: (selected) {
-              setState(() {
-                _selectedMetalType = selected ? 'Aluminum' : null;
-              });
-            },
-            inactiveBackgroundColor: Colors.grey.shade200,
-            inactiveLabelColor: Colors.black87,
-          ),
-        ),
-      ],
-    );
-  }
-
-  // A standard dropdown for categories (can be replaced with chip selection too)
-  Widget _buildStandardDropdown<T>({
-    required T? value,
-    required String hint,
-    required List<T> items,
-    required ValueChanged<T?> onChanged,
-  }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade200,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.grey.shade300, width: 1),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<T>(
-          value: value,
-          hint: Text(
-            hint,
-            style: const TextStyle(color: Colors.grey),
-          ),
-          icon: const Icon(Icons.arrow_drop_down, color: Colors.black87),
-          dropdownColor: Colors.white,
-          isExpanded: true,
-          style: const TextStyle(color: Colors.black87, fontSize: 16),
-          onChanged: onChanged,
-          items: items.map<DropdownMenuItem<T>>((T item) {
-            return DropdownMenuItem<T>(
-              value: item,
-              child: Text(item.toString()),
-            );
-          }).toList(),
-        ),
-      ),
-    );
-  }
-
-  // New widget to build the custom field that triggers the chip selection sheet
-  Widget _buildChipSelectionField({
-    required BuildContext context,
-    required String title,
-    required String? selectedValue,
-    required List<String> options,
-    required ValueChanged<String?> onChanged,
-  }) {
-    return GestureDetector(
-      onTap: () async {
-        final String? result = await _showChipSelectionSheet(
-          context: context,
-          title: title,
-          options: options,
-          selectedValue: selectedValue,
-        );
-        if (result != null) {
-          onChanged(result);
-        }
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
-          color: Colors.grey.shade100,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey.shade300),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: selectedValue == null
-                  ? Text(
-                      'Select',
-                      style: TextStyle(color: Colors.grey, fontSize: 16),
-                    )
-                  : Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Theme.of(context).primaryColor),
-                      ),
-                      child: Text(
-                        selectedValue,
-                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
-                      ),
-                    ),
-            ),
-            Icon(Icons.arrow_drop_down, color: Colors.grey),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // New function to show the modal bottom sheet with horizontally arranged chips
-  Future<String?> _showChipSelectionSheet({
-    required BuildContext context,
-    required String title,
-    required List<String> options,
-    required String? selectedValue,
-  }) async {
-    String? tempSelectedValue = selectedValue;
-
-    return await showModalBottomSheet<String>(
-      context: context,
-      isScrollControlled: true, // Allows content to take more height
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
-      ),
-      builder: (BuildContext sheetContext) {
-        return StatefulBuilder( // Use StatefulBuilder to allow internal state changes within the bottom sheet
-          builder: (BuildContext context, StateSetter setStateInSheet) {
-            return Padding(
-              padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom,
-                left: 16.0,
-                right: 16.0,
-                top: 24.0,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min, // Takes minimum space
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 20),
-                  Wrap(
-                    spacing: 10.0, // Horizontal space between chips
-                    runSpacing: 10.0, // Vertical space between lines of chips
-                    children: options.map((option) {
-                      bool isSelected = tempSelectedValue == option;
-                      return CustomFilterChip( // Using your existing CustomFilterChip
-                        label: option,
-                        isSelected: isSelected,
-                        onSelected: (selected) {
-                          setStateInSheet(() { // Update state within the sheet
-                            tempSelectedValue = selected ? option : null;
-                          });
-                        },
-                        // You can customize colors here to match your theme
-                        selectedBackgroundColor: Theme.of(context).primaryColor,
-                        selectedLabelColor: Colors.white,
-                        inactiveBackgroundColor: Colors.grey.shade200,
-                        inactiveLabelColor: Colors.black87,
-                      );
-                    }).toList(),
-                  ),
-                  const SizedBox(height: 30),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context, tempSelectedValue); // Return selected value
-                      },
-                      child: const Text('Select'),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                ],
-              ),
-            );
-          },
-        );
-      },
     );
   }
 }

@@ -4,46 +4,35 @@ import 'package:flutter/material.dart';
 class BottomNavBar extends StatelessWidget {
   final int selectedIndex;
   final Function(int) onItemTapped;
+  final List<BottomNavigationBarItem>? items; // Re-added as optional
 
   const BottomNavBar({
     super.key,
     required this.selectedIndex,
     required this.onItemTapped,
+    this.items, // Accept optional items
   });
 
   @override
   Widget build(BuildContext context) {
+    // Default buyer items - these will be used if 'items' is not provided
+    final List<BottomNavigationBarItem> defaultBuyerItems = const <BottomNavigationBarItem>[
+      BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+      BottomNavigationBarItem(icon: Icon(Icons.shopping_bag), label: 'Products'),
+      BottomNavigationBarItem(icon: Icon(Icons.description), label: 'Quotes'),
+      BottomNavigationBarItem(icon: Icon(Icons.receipt_long), label: 'Orders'),
+      BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Account'),
+    ];
+
     return BottomNavigationBar(
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Home',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.category),
-          label: 'Products',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.description),
-          label: 'Requests',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.assignment),
-          label: 'Orders',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.person),
-          label: 'Profile',
-        ),
-      ],
+      items: items ?? defaultBuyerItems, // Use provided items, or fallback to defaultBuyerItems
       currentIndex: selectedIndex,
-      selectedItemColor: Theme.of(context).primaryColor, // Use theme primary blue
-      unselectedItemColor: Colors.grey.shade600, // Darker grey for unselected
+      selectedItemColor: Theme.of(context).primaryColor,
+      unselectedItemColor: Colors.grey,
       onTap: onItemTapped,
-      backgroundColor: Colors.white, // White background for nav bar
-      type: BottomNavigationBarType.fixed, // Ensure all labels are shown
+      type: BottomNavigationBarType.fixed, // Ensures all labels are visible
+      backgroundColor: Colors.white,
       selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
-      unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.normal),
     );
   }
 }

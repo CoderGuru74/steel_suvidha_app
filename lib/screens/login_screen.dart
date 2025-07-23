@@ -1,12 +1,11 @@
 // lib/screens/login_screen.dart
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
-import 'package:figma_app/screens/home_screen.dart'; // Ensure HomeScreen is imported
+import 'package:figma_app/screens/buyer_main_screen.dart'; // Import the new BuyerMainScreen
+import 'package:figma_app/screens/seller_home_screen.dart'; // Ensure this is imported for seller
+import 'package:figma_app/screens/registration_screen.dart'; // Import RegistrationScreen
 
 class LoginScreen extends StatefulWidget {
-  final String? selectedRole; // <--- THIS LINE IS CRUCIAL
-
-  const LoginScreen({super.key, this.selectedRole}); // <--- THIS CONSTRUCTOR IS CRUCIAL
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -15,7 +14,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  bool _obscureText = true;
+  String? _selectedRole; // Nullable to indicate no role selected initially
 
   @override
   void dispose() {
@@ -25,195 +24,230 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _login() {
-    // Basic login logic (replace with your actual authentication)
-    if (_usernameController.text == 'user' && _passwordController.text == 'password') {
+    final String username = _usernameController.text;
+    final String password = _passwordController.text;
+
+    // Basic validation
+    if (username.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Login Successful!')),
+        const SnackBar(content: Text('Please enter username and password')),
       );
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const HomeScreen(), // Navigating to HomeScreen without role
-        ),
+      return;
+    }
+
+    if (_selectedRole == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select a role')),
       );
+      return;
+    }
+
+    // Dummy authentication logic
+    bool isAuthenticated = false;
+    if (_selectedRole == 'Buyer' && username == 'buyer' && password == 'buyer123') {
+      isAuthenticated = true;
+    } else if (_selectedRole == 'Seller' && username == 'seller' && password == 'seller123') {
+      isAuthenticated = true;
+    } else if (_selectedRole == 'Admin' && username == 'admin' && password == 'admin123') {
+      isAuthenticated = true; // For demonstration, admin path is just a snackbar
+    }
+
+    if (isAuthenticated) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Logged in as $_selectedRole')),
+      );
+
+      // Navigate based on role
+      if (_selectedRole == 'Buyer') {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const BuyerMainScreen()), // Navigate to BuyerMainScreen
+        );
+      } else if (_selectedRole == 'Seller') {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const SellerHomeScreen()),
+        );
+      } else if (_selectedRole == 'Admin') {
+        // For admin, you might navigate to an admin dashboard
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Admin Dashboard (Not implemented yet)')),
+        );
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Invalid Credentials')),
+        const SnackBar(content: Text('Invalid credentials or role')),
       );
     }
+  }
+
+  void _navigateToRegistration() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const RegistrationScreen()),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          // Background with Steel Texture and Shimmer Animation
-          Positioned.fill(
-            child: Animate(
-              effects: const [
-                ShimmerEffect(
-                  duration: Duration(seconds: 5), // Duration of one shimmer cycle
-                  delay: Duration(seconds: 2),    // Delay before first shimmer
-                  color: Colors.white38,          // Color of the shimmer
-                  blendMode: BlendMode.srcOver,   // How the shimmer blends
-                ),
-              ],
-              child: Image.asset(
-                'assets/images/background.jpg',
-                fit: BoxFit.cover,
-                alignment: Alignment.centerRight,
+      appBar: AppBar(
+        title: const Text('Login'),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).primaryColor, // Use primary color for AppBar
+        foregroundColor: Colors.white, // White text for AppBar title/icons
+      ),
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              // Logo or App Icon
+              Icon(
+                Icons.account_circle, // Placeholder for your app icon/logo
+                size: 100,
+                color: Theme.of(context).primaryColor,
               ),
-            ),
-          ),
+              const SizedBox(height: 30),
 
-          // Dark overlay for better readability of text
-          Positioned.fill(
-            child: Container(
-              color: Colors.black.withOpacity(0.4), // Adjust opacity as needed
-            ),
-          ),
+              Text(
+                'Welcome Back!',
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.onBackground,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'Sign in to continue',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Theme.of(context).colorScheme.onBackground.withOpacity(0.7),
+                ),
+              ),
+              const SizedBox(height: 40),
 
-          // Login Form Content
-          Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Display selected role if available (this part is okay, it's just a display)
-                  if (widget.selectedRole != null) ...[ // Uses the selectedRole from the constructor
-                    Text(
-                      'Logging in as: ${widget.selectedRole!.toUpperCase()}',
-                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                      textAlign: TextAlign.center,
+              // Username Field
+              TextField(
+                controller: _usernameController,
+                decoration: InputDecoration(
+                  labelText: 'Username',
+                  hintText: 'Enter your username',
+                  prefixIcon: Icon(Icons.person, color: Theme.of(context).primaryColor),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey.shade300),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              // Password Field
+              TextField(
+                controller: _passwordController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  hintText: 'Enter your password',
+                  prefixIcon: Icon(Icons.lock, color: Theme.of(context).primaryColor),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey.shade300),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              // Role Selection (Dropdown)
+              DropdownButtonFormField<String>(
+                value: _selectedRole,
+                decoration: InputDecoration(
+                  labelText: 'Select Role',
+                  prefixIcon: Icon(Icons.business_center, color: Theme.of(context).primaryColor),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey.shade300),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 2),
+                  ),
+                ),
+                hint: const Text('Choose your role'),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _selectedRole = newValue;
+                  });
+                },
+                items: <String>['Buyer', 'Seller', 'Admin']
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 30),
+
+              // Login Button
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: _login,
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    const SizedBox(height: 20),
-                  ],
+                  ),
+                  child: const Text(
+                    'Login',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
 
-                  // Company Logo (Optional)
-                  Image.asset(
-                    'assets/images/logo.png', // Replace with your actual logo path
-                    height: 120,
-                    width: 120,
-                  ).animate().fade(duration: 1000.ms).slideY(begin: -0.2),
-
-                  const SizedBox(height: 30),
-
-                  Text(
-                    'Welcome to Steel Suvidha',
-                    style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                          color: Colors.white,
+              // Register Link
+              TextButton(
+                onPressed: _navigateToRegistration,
+                child: Text.rich(
+                  TextSpan(
+                    text: 'Don\'t have an account? ',
+                    style: TextStyle(color: Theme.of(context).colorScheme.onBackground.withOpacity(0.7)),
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: 'Register now',
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
                           fontWeight: FontWeight.bold,
                         ),
-                    textAlign: TextAlign.center,
-                  ).animate().fade(duration: 1000.ms, delay: 200.ms).slideY(begin: -0.1),
-
-                  const SizedBox(height: 40),
-
-                  // Username Field
-                  _buildTextField(
-                    controller: _usernameController,
-                    hintText: 'Username',
-                    icon: Icons.person,
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Password Field
-                  _buildTextField(
-                    controller: _passwordController,
-                    hintText: 'Password',
-                    icon: Icons.lock,
-                    obscureText: _obscureText,
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _obscureText ? Icons.visibility : Icons.visibility_off,
-                        color: Colors.white70,
                       ),
-                      onPressed: () {
-                        setState(() {
-                          _obscureText = !_obscureText;
-                        });
-                      },
-                    ),
+                    ],
                   ),
-                  const SizedBox(height: 30),
-
-                  // Login Button
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _login,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).primaryColor,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: const Text(
-                        'Login',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ).animate().fade(duration: 1000.ms, delay: 400.ms).slideY(begin: 0.1),
-
-                  const SizedBox(height: 20),
-
-                  // Forgot Password / Sign Up (Optional)
-                  TextButton(
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Forgot Password?')),
-                      );
-                    },
-                    child: Text(
-                      'Forgot Password?',
-                      style: TextStyle(color: Colors.white70, fontSize: 14),
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String hintText,
-    required IconData icon,
-    bool obscureText = false,
-    Widget? suffixIcon,
-  }) {
-    return TextField(
-      controller: controller,
-      obscureText: obscureText,
-      style: const TextStyle(color: Colors.white),
-      decoration: InputDecoration(
-        hintText: hintText,
-        hintStyle: const TextStyle(color: Colors.white54),
-        prefixIcon: Icon(icon, color: Colors.white70),
-        suffixIcon: suffixIcon,
-        filled: true,
-        fillColor: Colors.white.withOpacity(0.1),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide.none,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: Colors.white.withOpacity(0.3)),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 2),
         ),
       ),
     );
