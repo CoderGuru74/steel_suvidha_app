@@ -1,61 +1,66 @@
-// lib/widgets/custom_app_bar.dart
 import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final bool showBackButton;
   final bool showShoppingCart;
-  final VoidCallback? onBackButtonPressed;
-  final VoidCallback? onShoppingCartPressed;
-  final List<String> breadcrumbs;
+  final List<Widget>? actions;
+  final List<String>? breadcrumbs; // Added back for home_screen.dart
+  final VoidCallback? onShoppingCartPressed; // Added for shopping cart button press
 
   const CustomAppBar({
     super.key,
     required this.title,
-    this.showBackButton = false,
+    this.showBackButton = true,
     this.showShoppingCart = false,
-    this.onBackButtonPressed,
-    this.onShoppingCartPressed,
-    this.breadcrumbs = const [],
+    this.actions,
+    this.breadcrumbs, // Initialized
+    this.onShoppingCartPressed, // Initialized
   });
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      // Colors are handled by AppBarTheme in main.dart
-      leading: showBackButton
-          ? IconButton(
-              icon: const Icon(Icons.arrow_back), // Icon color from theme
-              onPressed: onBackButtonPressed ?? () => Navigator.of(context).pop(),
-            )
-          : null,
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             title,
-            style: Theme.of(context).appBarTheme.titleTextStyle, // Title style from theme
+            style: Theme.of(context).appBarTheme.titleTextStyle,
           ),
-          if (breadcrumbs.isNotEmpty)
+          if (breadcrumbs != null && breadcrumbs!.isNotEmpty)
             Text(
-              breadcrumbs.join(' > '),
+              breadcrumbs!.join(' > '), // Join breadcrumbs with a separator
               style: TextStyle(
                 fontSize: 12,
-                color: Theme.of(context).appBarTheme.foregroundColor?.withOpacity(0.7), // Adjusted breadcrumb color
+                color: Colors.grey[400],
               ),
             ),
         ],
       ),
+      centerTitle: false,
+      backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+      foregroundColor: Theme.of(context).appBarTheme.foregroundColor,
+      elevation: Theme.of(context).appBarTheme.elevation,
+      leading: showBackButton
+          ? IconButton(
+              icon: const Icon(Icons.arrow_back_ios),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            )
+          : null,
       actions: [
         if (showShoppingCart)
           IconButton(
-            icon: const Icon(Icons.shopping_cart_outlined), // Icon color from theme
-            onPressed: onShoppingCartPressed,
+            icon: const Icon(Icons.shopping_cart),
+            onPressed: onShoppingCartPressed, // Using the new callback
           ),
+        ...?actions, // Spread the new actions list here
       ],
     );
   }
-
-  @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight + 20); // Slightly taller for breadcrumbs
 }
