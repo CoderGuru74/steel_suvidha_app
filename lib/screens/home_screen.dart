@@ -1,7 +1,7 @@
 // lib/screens/home_screen.dart (Now contains only the content for the Home tab)
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:figma_app/widgets/custom_app_bar.dart';
+import 'package:steel_suvidha/widgets/custom_app_bar.dart';
 
 // Renamed from HomeScreen to HomeScreenContent as it's now part of BuyerMainScreen
 class HomeScreenContent extends StatelessWidget {

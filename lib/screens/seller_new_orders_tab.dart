@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:figma_app/widgets/seller_order_item_card.dart';
+import 'package:steel_suvidha/widgets/seller_order_item_card.dart';
 
 class SellerNewOrdersTab extends StatelessWidget {
   SellerNewOrdersTab({super.key}); // NO 'const' HERE

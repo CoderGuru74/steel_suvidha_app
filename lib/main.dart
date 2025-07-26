@@ -1,7 +1,7 @@
 // lib/main.dart
 import 'package:flutter/material.dart';
-import 'package:figma_app/screens/login_screen.dart'; // Import LoginScreen
-import 'package:figma_app/screens/admin_home_screen.dart';
+import 'package:steel_suvidha/screens/login_screen.dart';
+import 'package:steel_suvidha/screens/admin_home_screen.dart';
 
 void main() {
   runApp(const MyApp());

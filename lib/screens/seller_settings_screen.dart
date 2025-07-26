@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:figma_app/widgets/custom_app_bar.dart'; // Ensure this import is correct
-
+import 'package:steel_suvidha/widgets/custom_app_bar.dart'; // Ensure this import is correct
 class SellerSettingsScreen extends StatelessWidget {
   const SellerSettingsScreen({super.key});
 

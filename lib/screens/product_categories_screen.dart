@@ -1,6 +1,6 @@
 // lib/screens/product_categories_screen.dart
 import 'package:flutter/material.dart';
-import 'package:figma_app/screens/product_listing_screen.dart'; // Import the detailed listing screen
+import 'package:steel_suvidha/screens/product_listing_screen.dart'; // Import the detailed listing screen
 
 class ProductCategoriesScreen extends StatelessWidget {
   const ProductCategoriesScreen({super.key});

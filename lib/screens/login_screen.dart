@@ -1,9 +1,9 @@
 // lib/screens/login_screen.dart
 import 'package:flutter/material.dart';
-import 'package:figma_app/screens/buyer_main_screen.dart';
-import 'package:figma_app/screens/seller_home_screen.dart';
-import 'package:figma_app/screens/registration_screen.dart';
-import 'package:figma_app/screens/admin_home_screen.dart';
+import 'package:steel_suvidha/screens/buyer_main_screen.dart';
+import 'package:steel_suvidha/screens/seller_home_screen.dart';
+import 'package:steel_suvidha/screens/registration_screen.dart';
+import 'package:steel_suvidha/screens/admin_home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

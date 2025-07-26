@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:figma_app/widgets/dashboard_info_card.dart'; // Import the info card
-import 'package:figma_app/widgets/dashboard_activity_tile.dart'; // Import the activity tile
-import 'package:figma_app/widgets/dashboard_alert_tile.dart'; // Import the alert tile
-
+import 'package:steel_suvidha/widgets/dashboard_info_card.dart'; // Import the info card
+import 'package:steel_suvidha/widgets/dashboard_activity_tile.dart'; // Import the activity tile
+import 'package:steel_suvidha/widgets/dashboard_alert_tile.dart'; // Import the alert tile
 class SellerDashboardScreen extends StatelessWidget {
   const SellerDashboardScreen({super.key});
 

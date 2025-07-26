@@ -1,7 +1,7 @@
 // lib/screens/role_selection_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart'; // Import flutter_animate
-import 'package:figma_app/screens/login_screen.dart'; // Import your LoginScreen
+import 'package:steel_suvidha/screens/login_screen.dart'; // Import your LoginScreen
 
 class RoleSelectionScreen extends StatelessWidget {
   const RoleSelectionScreen({super.key});

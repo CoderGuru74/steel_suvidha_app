@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:figma_app/widgets/bottom_nav_bar.dart';
-import 'package:figma_app/widgets/custom_app_bar.dart';
-import 'package:figma_app/screens/seller_dashboard_screen.dart';
-import 'package:figma_app/screens/seller_my_products_screen.dart';
+import 'package:steel_suvidha/widgets/bottom_nav_bar.dart';
+import 'package:steel_suvidha/widgets/custom_app_bar.dart';
+import 'package:steel_suvidha/screens/seller_dashboard_screen.dart';
+import 'package:steel_suvidha/screens/seller_my_products_screen.dart';
 // Imports for Orders tabs
-import 'package:figma_app/screens/seller_new_orders_tab.dart';
-import 'package:figma_app/screens/seller_in_progress_orders_tab.dart';
-import 'package:figma_app/screens/seller_completed_orders_tab.dart';
+import 'package:steel_suvidha/screens/seller_new_orders_tab.dart';
+import 'package:steel_suvidha/screens/seller_in_progress_orders_tab.dart';
+import 'package:steel_suvidha/screens/seller_completed_orders_tab.dart';
 // Import for Account Screen
-import 'package:figma_app/screens/seller_account_screen.dart';
-
+import 'package:steel_suvidha/screens/seller_account_screen.dart';
 class SellerHomeScreen extends StatefulWidget {
   const SellerHomeScreen({super.key});
 

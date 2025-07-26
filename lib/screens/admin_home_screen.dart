@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:figma_app/widgets/bottom_nav_bar.dart'; // Ensure this path is correct
-import 'package:figma_app/widgets/custom_app_bar.dart'; // Ensure this path is correct
-import 'package:figma_app/screens/admin_settings_screen.dart'; // Import your new settings screen
-import 'package:figma_app/screens/admin_profile_screen.dart'; // For the new profile screen
-import 'package:intl/intl.dart'; // For date formatting (make sure you have intl: ^0.19.0 in pubspec.yaml)
+import 'package:intl/intl.dart';
+import 'package:steel_suvidha/widgets/bottom_nav_bar.dart'; // Ensure this path is correct
+import 'package:steel_suvidha/widgets/custom_app_bar.dart'; // Ensure this path is correct
+import 'package:steel_suvidha/screens/admin_settings_screen.dart'; // Import your new settings screen
+import 'package:steel_suvidha/screens/admin_profile_screen.dart'; // For the new profile screen
 
 
 // ===============================================

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:figma_app/widgets/seller_order_item_card.dart';
+import 'package:steel_suvidha/widgets/seller_order_item_card.dart';
 import 'package:intl/intl.dart'; // <--- CORRECTED IMPORT PATH
 
 class SellerInProgressOrdersTab extends StatefulWidget {

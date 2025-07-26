@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:figma_app/screens/request_quote_screen.dart'; // Import the RequestQuoteScreen
-import 'package:figma_app/screens/buyer_cart_screen.dart'; // Import the new BuyerCartScreen
+import 'package:steel_suvidha/screens/request_quote_screen.dart'; // Import the RequestQuoteScreen
+import 'package:steel_suvidha/screens/buyer_cart_screen.dart'; // Import the new BuyerCartScreen
 
 // 1. Define a simple Product Data Model
 class Product {

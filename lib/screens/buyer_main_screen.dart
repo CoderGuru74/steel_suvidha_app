@@ -1,12 +1,11 @@
 // lib/screens/buyer_main_screen.dart
 import 'package:flutter/material.dart';
-import 'package:figma_app/screens/home_screen.dart';
-import 'package:figma_app/screens/product_categories_screen.dart';
-import 'package:figma_app/screens/quotes_history_screen.dart';
-import 'package:figma_app/screens/order_history_screen.dart';
-import 'package:figma_app/screens/account_screen.dart'; // Import the new AccountScreen
-import 'package:figma_app/widgets/bottom_nav_bar.dart';
-
+import 'package:steel_suvidha/screens/home_screen.dart';
+import 'package:steel_suvidha/screens/product_categories_screen.dart';
+import 'package:steel_suvidha/screens/quotes_history_screen.dart';
+import 'package:steel_suvidha/screens/order_history_screen.dart';
+import 'package:steel_suvidha/screens/account_screen.dart'; // Import the new AccountScreen
+import 'package:steel_suvidha/widgets/bottom_nav_bar.dart';
 class BuyerMainScreen extends StatefulWidget {
   const BuyerMainScreen({super.key});
 

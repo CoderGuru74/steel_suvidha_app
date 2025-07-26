@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:figma_app/widgets/seller_product_list_item.dart';
-
+import 'package:steel_suvidha/widgets/seller_product_list_item.dart';
 // Define a simple model for a seller's product
 class SellerProduct {
   final String id;
