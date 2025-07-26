@@ -1,8 +1,115 @@
 import 'package:flutter/material.dart';
-import 'package:figma_app/widgets/bottom_nav_bar.dart'; // Reusing your bottom nav bar widget
-import 'package:figma_app/widgets/custom_app_bar.dart'; // Reusing your custom app bar
+import 'package:figma_app/widgets/bottom_nav_bar.dart'; // Ensure this path is correct
+import 'package:figma_app/widgets/custom_app_bar.dart'; // Ensure this path is correct
 
-// Placeholder screens for admin sections
+// ===============================================
+// Data Models
+// ===============================================
+
+class User {
+  final String id;
+  final String name;
+  final String email;
+  final String lastLogin;
+  final String role;
+  final String status;
+  final String activity;
+
+  User({
+    required this.id,
+    required this.name,
+    required this.email,
+    required this.lastLogin,
+    required this.role,
+    this.status = 'Active',
+    this.activity = 'Online',
+  });
+}
+
+class Product {
+  final String id;
+  final String name;
+  final String category;
+  final String supplier;
+  final String status;
+  final String quantity;
+
+  Product({
+    required this.id,
+    required this.name,
+    required this.category,
+    required this.supplier,
+    this.status = 'Available',
+    this.quantity = 'High',
+  });
+}
+
+class Quote {
+  final String id;
+  final String buyerName; // Correct field name
+  final String productName;
+  final String requestedQuantity;
+  final String status;
+  final DateTime dateGenerated;
+
+  Quote({
+    required this.id,
+    required this.buyerName, // Correct field name
+    required this.productName,
+    required this.requestedQuantity,
+    required this.status,
+    required this.dateGenerated,
+  });
+}
+
+// ===============================================
+// Dummy Data (for demonstration)
+// ===============================================
+
+final List<User> dummyUsers = [
+  User(id: 'U001', name: 'Alice Smith', email: 'alice@example.com', lastLogin: '2025-07-25', role: 'Buyer', status: 'Active', activity: 'Online'),
+  User(id: 'U002', name: 'Bob Johnson', email: 'bob@example.com', lastLogin: '2025-07-24', role: 'Seller', status: 'Active', activity: 'Offline'),
+  User(id: 'U003', name: 'Charlie Brown', email: 'charlie@example.com', lastLogin: '2025-07-23', role: 'Admin', status: 'Active', activity: 'Online'),
+  User(id: 'U004', name: 'Diana Prince', email: 'diana@example.com', lastLogin: '2025-07-25', role: 'Buyer', status: 'Inactive', activity: 'Offline'),
+  User(id: 'U005', name: 'Eve Adams', email: 'eve@example.com', lastLogin: '2025-07-22', role: 'Seller', status: 'Blocked', activity: 'Offline'),
+  User(id: 'U006', name: 'Frank White', email: 'frank@example.com', lastLogin: '2025-07-21', role: 'Buyer', status: 'Active', activity: 'Online'),
+  User(id: 'U007', name: 'Grace Lee', email: 'grace@example.com', lastLogin: '2025-07-20', role: 'Admin', status: 'Active', activity: 'Offline'),
+  User(id: 'U008', name: 'Henry Ford', email: 'henry@example.com', lastLogin: '2025-07-19', role: 'Seller', status: 'Active', activity: 'Online'),
+  User(id: 'U009', name: 'Ivy Green', email: 'ivy@example.com', lastLogin: '2025-07-18', role: 'Buyer', status: 'Inactive', activity: 'Offline'),
+  User(id: 'U010', name: 'Jack Black', email: 'jack@example.com', lastLogin: '2025-07-17', role: 'Seller', status: 'Active', activity: 'Online'),
+];
+
+final List<Product> dummyProducts = [
+  Product(id: 'P001', name: 'Steel Rebar 10mm', category: 'Construction', supplier: 'ABC Steel Inc.', status: 'Available', quantity: 'High'),
+  Product(id: 'P002', name: 'Stainless Steel Sheet', category: 'Manufacturing', supplier: 'XYZ Metals', status: 'Out of Stock', quantity: 'Low'),
+  Product(id: 'P003', name: 'Alloy Steel Bar', category: 'Automotive', supplier: 'Global Alloys', status: 'On Order', quantity: 'Medium'),
+  Product(id: 'P004', name: 'Carbon Steel Pipe', category: 'Piping', supplier: 'Pipe Solutions', status: 'Available', quantity: 'High'),
+  Product(id: 'P005', name: 'Galvanized Iron Wire', category: 'General Hardware', supplier: 'Iron Works Co.', status: 'Available', quantity: 'High'),
+  Product(id: 'P006', name: 'Copper Rods', category: 'Electrical', supplier: 'ElectroSupplies', status: 'Out of Stock', quantity: 'Low'),
+  Product(id: 'P007', name: 'Brass Sheets', category: 'Decor', supplier: 'Artisan Metals', status: 'Available', quantity: 'Medium'),
+  Product(id: 'P008', name: 'Aluminum Coils', category: 'Packaging', supplier: 'Lightweight Metals', status: 'On Order', quantity: 'High'),
+  Product(id: 'P009', name: 'Titanium Fasteners', category: 'Aerospace', supplier: 'Aerospace Connect', status: 'Available', quantity: 'Low'),
+  Product(id: 'P010', name: 'Cast Iron Fittings', category: 'Plumbing', supplier: 'Aqua Pipes', status: 'Available', quantity: 'High'),
+];
+
+final List<Quote> dummyQuotes = [
+  Quote(id: 'Q001', buyerName: 'Alice Smith', productName: 'Steel Rebar 10mm', requestedQuantity: '1000 kg', status: 'Pending', dateGenerated: DateTime.now().subtract(const Duration(days: 2))),
+  Quote(id: 'Q002', buyerName: 'Bob Johnson', productName: 'Stainless Steel Sheet', requestedQuantity: '50 sheets', status: 'Accepted', dateGenerated: DateTime.now().subtract(const Duration(days: 5))),
+  Quote(id: 'Q003', buyerName: 'Charlie Brown', productName: 'Alloy Steel Bar', requestedQuantity: '200 units', status: 'In Progress', dateGenerated: DateTime.now().subtract(const Duration(days: 1))),
+  Quote(id: 'Q004', buyerName: 'Diana Prince', productName: 'Carbon Steel Pipe', requestedQuantity: '500m', status: 'Rejected', dateGenerated: DateTime.now().subtract(const Duration(days: 10))),
+  Quote(id: 'Q005', buyerName: 'Eve Adams', productName: 'Steel Rebar 10mm', requestedQuantity: '200 kg', status: 'Pending', dateGenerated: DateTime.now().subtract(const Duration(hours: 5))),
+  Quote(id: 'Q006', buyerName: 'Frank White', productName: 'Galvanized Iron Wire', requestedQuantity: '10 rolls', status: 'Delivered', dateGenerated: DateTime.now().subtract(const Duration(days: 15))),
+  Quote(id: 'Q007', buyerName: 'Grace Lee', productName: 'Copper Rods', requestedQuantity: '150 units', status: 'In Progress', dateGenerated: DateTime.now().subtract(const Duration(days: 3))),
+  Quote(id: 'Q008', buyerName: 'Henry Ford', productName: 'Brass Sheets', requestedQuantity: '5 sheets', status: 'Pending', dateGenerated: DateTime.now().subtract(const Duration(hours: 10))),
+  Quote(id: 'Q009', buyerName: 'Ivy Green', productName: 'Aluminum Coils', requestedQuantity: '30 kg', status: 'Accepted', dateGenerated: DateTime.now().subtract(const Duration(days: 7))),
+  Quote(id: 'Q010', buyerName: 'Jack Black', productName: 'Titanium Fasteners', requestedQuantity: '1000 pcs', status: 'Rejected', dateGenerated: DateTime.now().subtract(const Duration(days: 20))),
+];
+
+
+// ===============================================
+// Admin Dashboard Content Widget
+// ===============================================
+
 class AdminDashboardContent extends StatelessWidget {
   const AdminDashboardContent({super.key});
 
@@ -11,7 +118,7 @@ class AdminDashboardContent extends StatelessWidget {
     return CustomScrollView(
       slivers: [
         SliverPadding(
-          padding: const EdgeInsets.all(16.0), // Padding for the entire content
+          padding: const EdgeInsets.all(16.0),
           sliver: SliverList(
             delegate: SliverChildListDelegate(
               [
@@ -24,29 +131,27 @@ class AdminDashboardContent extends StatelessWidget {
             ),
           ),
         ),
-        // The GridView content now becomes a SliverGrid
         SliverPadding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0), // Same horizontal padding as the list
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           sliver: SliverGrid(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               crossAxisSpacing: 16.0,
               mainAxisSpacing: 16.0,
-              childAspectRatio: 1.0, // **ADJUSTED CHILD ASPECT RATIO (from 1.1 to 1.0)**
-                                      // Making cards taller to fit content. (width / height = 1.0 means width = height)
+              childAspectRatio: 1.0,
             ),
             delegate: SliverChildListDelegate(
               [
-                _buildMetricCard(context, 'Total Registered Users', '1,234', Icons.people_alt, Colors.teal),
-                _buildMetricCard(context, 'Total Products Listed', '567', Icons.inventory_2, Colors.orange),
-                _buildMetricCard(context, 'Total Orders', '890', Icons.receipt_long, Colors.blue),
-                _buildMetricCard(context, 'Quotes Awaiting', '42', Icons.chat, Colors.purple),
+                _buildMetricCard(context, 'Total Registered Users', dummyUsers.length.toString(), Icons.people_alt, Colors.teal),
+                _buildMetricCard(context, 'Total Products Listed', dummyProducts.length.toString(), Icons.inventory_2, Colors.orange),
+                _buildMetricCard(context, 'Total Orders', '890', Icons.receipt_long, Colors.blue), // Placeholder
+                _buildMetricCard(context, 'Quotes Awaiting', dummyQuotes.where((q) => q.status == 'Pending').length.toString(), Icons.chat, Colors.purple),
               ],
             ),
           ),
         ),
         SliverPadding(
-          padding: const EdgeInsets.all(16.0), // Padding for the rest of the list items
+          padding: const EdgeInsets.all(16.0),
           sliver: SliverList(
             delegate: SliverChildListDelegate(
               [
@@ -128,23 +233,19 @@ class AdminDashboardContent extends StatelessWidget {
                     ),
                   ),
                 ),
-                // IMPORTANT: Add an even more generous buffer at the end of the SliverList
                 SizedBox(height: kBottomNavigationBarHeight + MediaQuery.of(context).padding.bottom + 40.0),
               ],
             ),
           ),
         ),
-        // This SliverFillRemaining is crucial. It ensures the scrollable area
-        // always extends to the bottom of the viewport, effectively preventing overflow.
         SliverFillRemaining(
-          hasScrollBody: false, // Ensures it just fills space, doesn't add scroll functionality
-          child: Container(color: Colors.transparent), // A transparent container to fill the space
+          hasScrollBody: false,
+          child: Container(color: Colors.transparent),
         ),
       ],
     );
   }
 
-  // Helper widgets for building cards, tiles, etc.
   Widget _buildMetricCard(BuildContext context, String title, String value, IconData icon, Color color) {
     return Card(
       elevation: 4,
@@ -250,28 +351,10 @@ class AdminDashboardContent extends StatelessWidget {
   }
 }
 
-// Data model for a User
-class User {
-  final String id;
-  final String name;
-  final String email;
-  final String lastLogin;
-  final String role;
-  final String status;
-  final String activity; // For filter dropdowns
+// ===============================================
+// User Management Widgets
+// ===============================================
 
-  User({
-    required this.id,
-    required this.name,
-    required this.email,
-    required this.lastLogin,
-    required this.role,
-    this.status = 'Active', // Default status
-    this.activity = 'Online', // Default activity
-  });
-}
-
-// Widget for displaying a single user item
 class UserListItem extends StatelessWidget {
   final User user;
 
@@ -288,7 +371,6 @@ class UserListItem extends StatelessWidget {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Tapped on ${user.name} (${user.role})')),
           );
-          // TODO: Navigate to User Details Screen
         },
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -329,9 +411,8 @@ class UserListItem extends StatelessWidget {
   }
 }
 
-// Base class for User/Seller/Admin lists
 class UserListScreen extends StatefulWidget {
-  final String userType; // "Buyer", "Seller", "Admin"
+  final String userType;
   final List<User> users;
 
   const UserListScreen({super.key, required this.userType, required this.users});
@@ -341,6 +422,7 @@ class UserListScreen extends StatefulWidget {
 }
 
 class _UserListScreenState extends State<UserListScreen> {
+  String? _selectedRole;
   String? _selectedStatus;
   String? _selectedActivity;
   final TextEditingController _searchController = TextEditingController();
@@ -348,22 +430,23 @@ class _UserListScreenState extends State<UserListScreen> {
   List<User> get _filteredUsers {
     List<User> filtered = widget.users;
 
-    // Filter by search query
     if (_searchController.text.isNotEmpty) {
       final query = _searchController.text.toLowerCase();
       filtered = filtered.where((user) {
         return user.name.toLowerCase().contains(query) ||
-               user.email.toLowerCase().contains(query) ||
-               user.id.toLowerCase().contains(query);
+            user.email.toLowerCase().contains(query) ||
+            user.id.toLowerCase().contains(query);
       }).toList();
     }
 
-    // Filter by status
+    if (_selectedRole != null && _selectedRole != 'All') {
+      filtered = filtered.where((user) => user.role == _selectedRole).toList();
+    }
+
     if (_selectedStatus != null && _selectedStatus != 'All') {
       filtered = filtered.where((user) => user.status == _selectedStatus).toList();
     }
 
-    // Filter by activity
     if (_selectedActivity != null && _selectedActivity != 'All') {
       filtered = filtered.where((user) => user.activity == _selectedActivity).toList();
     }
@@ -375,7 +458,7 @@ class _UserListScreenState extends State<UserListScreen> {
   void initState() {
     super.initState();
     _searchController.addListener(() {
-      setState(() {}); // Rebuild to apply search filter
+      setState(() {});
     });
   }
 
@@ -387,23 +470,27 @@ class _UserListScreenState extends State<UserListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Determine the relevant roles for the "Role" filter based on the userType passed
     List<String> roleFilterOptions;
-    if (widget.userType == 'Buyer') {
-      roleFilterOptions = ['All', 'Buyer'];
-    } else if (widget.userType == 'Seller') {
-      roleFilterOptions = ['All', 'Seller'];
-    } else if (widget.userType == 'Admin') {
-      roleFilterOptions = ['All', 'Admin'];
+    if (widget.userType == 'All') {
+      roleFilterOptions = ['All', 'Buyer', 'Seller', 'Admin'];
     } else {
-      roleFilterOptions = ['All', 'Buyer', 'Seller', 'Admin']; // Fallback for 'Users' if it's an all-encompassing list
+      roleFilterOptions = ['All', widget.userType];
+    }
+
+    if (_selectedRole == null && roleFilterOptions.isNotEmpty) {
+      _selectedRole = roleFilterOptions.first;
+    }
+    if (_selectedStatus == null) {
+      _selectedStatus = 'All';
+    }
+    if (_selectedActivity == null) {
+      _selectedActivity = 'All';
     }
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
-          // Search Bar
           TextField(
             controller: _searchController,
             decoration: InputDecoration(
@@ -419,144 +506,106 @@ class _UserListScreenState extends State<UserListScreen> {
             ),
           ),
           const SizedBox(height: 10),
-          // Filter Dropdowns
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal, // Allows filters to scroll if many
-            // IntrinsicWidth makes the Row size itself to its children's intrinsic widths.
-            // This is key for allowing scrolling while using Flexible/Expanded for distribution.
-            child: IntrinsicWidth(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start, // Align to start for scrolling
-                children: [
-                  Flexible(
-                    flex: 1,
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 10.0), // Spacing between dropdowns
-                      child: ConstrainedBox( // Constrain min width for dropdown
-                        constraints: const BoxConstraints(minWidth: 100), // Adjusted for typical content
-                        child: DropdownButtonFormField<String>(
-                          isExpanded: true, // Crucial for dropdown to expand within its Flexible parent
-                          decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                            labelText: 'Role',
-                            isDense: true,
-                          ),
-                          value: _selectedStatus,
-                          items: roleFilterOptions.map((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value, overflow: TextOverflow.ellipsis), // Ellipsis for long text
-                            );
-                          }).toList(),
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              _selectedStatus = newValue;
-                            });
-                          },
-                        ),
-                      ),
-                    ),
+          // MODIFIED: Replaced SizedBox(width: ... child: Row()) with Wrap()
+          Wrap( // Replaced Row, removes need for Expanded/Flexible
+            spacing: 8.0, // horizontal space between chips/dropdowns
+            runSpacing: 8.0, // vertical space between rows of chips/dropdowns
+            children: [
+              // Optionally wrap each DropdownButtonFormField in a SizedBox to give it a minimum consistent width
+              // e.g., SizedBox(width: 150, child: DropdownButtonFormField...)
+              SizedBox( // Added SizedBox for a consistent width, adjust as needed
+                width: 110, // Approximate width to fit in filters, adjust based on screen size/content
+                child: DropdownButtonFormField<String>(
+                  isExpanded: true, // Still good to have for text overflow within dropdown
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6), // Revert to slightly more padding as space is now managed by Wrap
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                    labelText: 'Role',
+                    isDense: true,
                   ),
-                  Flexible(
-                    flex: 1,
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 10.0),
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(minWidth: 100),
-                        child: DropdownButtonFormField<String>(
-                          isExpanded: true,
-                          decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                            labelText: 'Status',
-                            isDense: true,
-                          ),
-                          value: _selectedStatus,
-                          items: <String>['All', 'Active', 'Inactive', 'Blocked'].map((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value, overflow: TextOverflow.ellipsis),
-                            );
-                          }).toList(),
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              _selectedStatus = newValue;
-                            });
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                  Flexible(
-                    flex: 1,
-                    child: ConstrainedBox( // No right padding for the last one
-                      constraints: const BoxConstraints(minWidth: 100),
-                      child: DropdownButtonFormField<String>(
-                        isExpanded: true,
-                        decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                          labelText: 'Activity',
-                          isDense: true,
-                        ),
-                        value: _selectedActivity,
-                        items: <String>['All', 'Online', 'Offline'].map((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value, overflow: TextOverflow.ellipsis),
-                          );
-                        }).toList(),
-                        onChanged: (String? newValue) {
-                            setState(() {
-                              _selectedActivity = newValue;
-                            });
-                          },
-                        ),
-                      ),
-                    ),
-                  ],
+                  value: _selectedRole,
+                  items: roleFilterOptions.map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value, overflow: TextOverflow.ellipsis),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      _selectedRole = newValue;
+                    });
+                  },
                 ),
               ),
-            ),
-            const SizedBox(height: 10),
-            // List of Users
-            Expanded(
-              child: ListView.builder(
-                itemCount: _filteredUsers.length,
-                itemBuilder: (context, index) {
-                  return UserListItem(user: _filteredUsers[index]);
-                },
+              SizedBox( // Added SizedBox for a consistent width, adjust as needed
+                width: 110, // Approximate width
+                child: DropdownButtonFormField<String>(
+                  isExpanded: true,
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6), // Revert to slightly more padding
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                    labelText: 'Status',
+                    isDense: true,
+                  ),
+                  value: _selectedStatus,
+                  items: <String>['All', 'Active', 'Inactive', 'Blocked'].map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value, overflow: TextOverflow.ellipsis),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      _selectedStatus = newValue;
+                    });
+                  },
+                ),
               ),
+              SizedBox( // Added SizedBox for a consistent width, adjust as needed
+                width: 110, // Approximate width
+                child: DropdownButtonFormField<String>(
+                  isExpanded: true,
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6), // Revert to slightly more padding
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                    labelText: 'Activity',
+                    isDense: true,
+                  ),
+                  value: _selectedActivity,
+                  items: <String>['All', 'Online', 'Offline'].map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value, overflow: TextOverflow.ellipsis),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      _selectedActivity = newValue;
+                    });
+                  },
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Expanded(
+            child: ListView.builder(
+              itemCount: _filteredUsers.length,
+              itemBuilder: (context, index) {
+                return UserListItem(user: _filteredUsers[index]);
+              },
             ),
-          ],
-        ),
-      );
-    }
+          ),
+        ],
+      ),
+    );
   }
-
-// --- Product Section Widgets ---
-
-// Data model for a Product
-class Product {
-  final String id;
-  final String name;
-  final String category;
-  final String supplier;
-  final String status;
-  final String quantity; // Using String for simplicity as per image, could be int
-
-  Product({
-    required this.id,
-    required this.name,
-    required this.category,
-    required this.supplier,
-    this.status = 'Available',
-    this.quantity = 'High',
-  });
 }
 
-// Widget for displaying a single product item
+// ===============================================
+// Product Management Widgets
+// ===============================================
+
 class ProductListItem extends StatelessWidget {
   final Product product;
 
@@ -573,7 +622,6 @@ class ProductListItem extends StatelessWidget {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Tapped on ${product.name}')),
           );
-          // TODO: Navigate to Product Details Screen
         },
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -605,7 +653,6 @@ class ProductListItem extends StatelessWidget {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('View details for ${product.name}')),
                   );
-                  // TODO: Implement View Product Details
                 },
                 child: const Text('View'),
               ),
@@ -618,7 +665,6 @@ class ProductListItem extends StatelessWidget {
   }
 }
 
-// Product List Screen
 class ProductListScreen extends StatefulWidget {
   final List<Product> products;
 
@@ -637,28 +683,24 @@ class _ProductListScreenState extends State<ProductListScreen> {
   List<Product> get _filteredProducts {
     List<Product> filtered = widget.products;
 
-    // Filter by search query
     if (_searchController.text.isNotEmpty) {
       final query = _searchController.text.toLowerCase();
       filtered = filtered.where((product) {
         return product.name.toLowerCase().contains(query) ||
-               product.category.toLowerCase().contains(query) ||
-               product.supplier.toLowerCase().contains(query) ||
-               product.id.toLowerCase().contains(query);
+            product.category.toLowerCase().contains(query) ||
+            product.supplier.toLowerCase().contains(query) ||
+            product.id.toLowerCase().contains(query);
       }).toList();
     }
 
-    // Filter by status
     if (_selectedStatus != null && _selectedStatus != 'All') {
       filtered = filtered.where((product) => product.status == _selectedStatus).toList();
     }
 
-    // Filter by quantity
     if (_selectedQuantity != null && _selectedQuantity != 'All') {
       filtered = filtered.where((product) => product.quantity == _selectedQuantity).toList();
     }
 
-    // Filter by category
     if (_selectedCategory != null && _selectedCategory != 'All') {
       filtered = filtered.where((product) => product.category == _selectedCategory).toList();
     }
@@ -670,7 +712,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
   void initState() {
     super.initState();
     _searchController.addListener(() {
-      setState(() {}); // Rebuild to apply search filter
+      setState(() {});
     });
   }
 
@@ -682,15 +724,23 @@ class _ProductListScreenState extends State<ProductListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Extract unique categories from dummy data for filter
     Set<String> categories = widget.products.map((p) => p.category).toSet();
     List<String> categoryOptions = ['All', ...categories.toList()];
+
+    if (_selectedStatus == null) {
+      _selectedStatus = 'All';
+    }
+    if (_selectedQuantity == null) {
+      _selectedQuantity = 'All';
+    }
+    if (_selectedCategory == null && categoryOptions.isNotEmpty) {
+      _selectedCategory = categoryOptions.first;
+    }
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
-          // Search Bar
           TextField(
             controller: _searchController,
             decoration: InputDecoration(
@@ -706,106 +756,86 @@ class _ProductListScreenState extends State<ProductListScreen> {
             ),
           ),
           const SizedBox(height: 10),
-          // Filter Dropdowns
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal, // Allows filters to scroll if many
-            child: IntrinsicWidth(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start, // Align to start for scrolling
-                children: [
-                  Flexible(
-                    flex: 1,
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 10.0),
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(minWidth: 100),
-                        child: DropdownButtonFormField<String>(
-                          isExpanded: true,
-                          decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                            labelText: 'Status',
-                            isDense: true,
-                          ),
-                          value: _selectedStatus,
-                          items: <String>['All', 'Available', 'Out of Stock', 'On Order'].map((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value, overflow: TextOverflow.ellipsis),
-                            );
-                          }).toList(),
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              _selectedStatus = newValue;
-                            });
-                          },
-                        ),
-                      ),
-                    ),
+          // MODIFIED: Replaced SizedBox(width: ... child: Row()) with Wrap()
+          Wrap( // Replaced Row, removes need for Expanded/Flexible
+            spacing: 8.0, // horizontal space between chips/dropdowns
+            runSpacing: 8.0, // vertical space between rows of chips/dropdowns
+            children: [
+              SizedBox( // Added SizedBox for a consistent width, adjust as needed
+                width: 110, // Approximate width
+                child: DropdownButtonFormField<String>(
+                  isExpanded: true,
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6), // Revert to slightly more padding
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                    labelText: 'Status',
+                    isDense: true,
                   ),
-                  Flexible(
-                    flex: 1,
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 10.0),
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(minWidth: 100),
-                        child: DropdownButtonFormField<String>(
-                          isExpanded: true,
-                          decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                            labelText: 'Quantity',
-                            isDense: true,
-                          ),
-                          value: _selectedQuantity,
-                          items: <String>['All', 'High', 'Medium', 'Low'].map((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value, overflow: TextOverflow.ellipsis),
-                            );
-                          }).toList(),
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              _selectedQuantity = newValue;
-                            });
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                  Flexible(
-                    flex: 1,
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(minWidth: 100),
-                      child: DropdownButtonFormField<String>(
-                        isExpanded: true,
-                        decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                          labelText: 'Category',
-                          isDense: true,
-                        ),
-                        value: _selectedCategory,
-                        items: categoryOptions.map((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value, overflow: TextOverflow.ellipsis),
-                          );
-                        }).toList(),
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            _selectedCategory = newValue;
-                          });
-                        },
-                      ),
-                    ),
-                  ),
-                ],
+                  value: _selectedStatus,
+                  items: <String>['All', 'Available', 'Out of Stock', 'On Order'].map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value, overflow: TextOverflow.ellipsis),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      _selectedStatus = newValue;
+                    });
+                  },
+                ),
               ),
-            ),
+              SizedBox( // Added SizedBox for a consistent width, adjust as needed
+                width: 110, // Approximate width
+                child: DropdownButtonFormField<String>(
+                  isExpanded: true,
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6), // Revert to slightly more padding
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                    labelText: 'Quantity',
+                    isDense: true,
+                  ),
+                  value: _selectedQuantity,
+                  items: <String>['All', 'High', 'Medium', 'Low'].map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value, overflow: TextOverflow.ellipsis),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      _selectedQuantity = newValue;
+                    });
+                  },
+                ),
+              ),
+              SizedBox( // Added SizedBox for a consistent width, adjust as needed
+                width: 110, // Approximate width
+                child: DropdownButtonFormField<String>(
+                  isExpanded: true,
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6), // Revert to slightly more padding
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                    labelText: 'Category',
+                    isDense: true,
+                  ),
+                  value: _selectedCategory,
+                  items: categoryOptions.map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value, overflow: TextOverflow.ellipsis),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      _selectedCategory = newValue;
+                    });
+                  },
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 10),
-          // List of Products
           Expanded(
             child: ListView.builder(
               itemCount: _filteredProducts.length,
@@ -820,8 +850,280 @@ class _ProductListScreenState extends State<ProductListScreen> {
   }
 }
 
+// ===============================================
+// Quotes Management Widgets
+// ===============================================
 
-// Admin Home Screen (main wrapper)
+class QuoteListItem extends StatelessWidget {
+  final Quote quote;
+
+  const QuoteListItem({super.key, required this.quote});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 0),
+      elevation: 1,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      child: InkWell(
+        onTap: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Tapped on Quote ID: ${quote.id}')),
+          );
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row( // This is the Row at line 879:15
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded( // ADDED: Expanded to give primary text flexibility
+                    child: Text(
+                      'Quote ID: ${quote.id} | Buyer: ${quote.buyerName}',
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      overflow: TextOverflow.ellipsis, // ADDED: Handle overflow within Expanded
+                    ),
+                  ),
+                  const SizedBox(width: 8), // ADDED: Small space between the two texts
+                  Text(
+                    quote.status,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: quote.status == 'Pending'
+                          ? Colors.orange.shade700
+                          : quote.status == 'In Progress'
+                              ? Colors.blue.shade700
+                              : quote.status == 'Delivered'
+                                  ? Colors.green.shade700
+                                  : Colors.red.shade700,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Product: ${quote.productName} (${quote.requestedQuantity})',
+                style: const TextStyle(color: Colors.grey, fontSize: 14),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Generated: ${quote.dateGenerated.toLocal().toString().split(' ')[0]}',
+                style: const TextStyle(color: Colors.grey, fontSize: 12),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class QuotesListScreen extends StatefulWidget {
+  final List<Quote> quotes;
+
+  const QuotesListScreen({super.key, required this.quotes});
+
+  @override
+  State<QuotesListScreen> createState() => _QuotesListScreenState();
+}
+
+class _QuotesListScreenState extends State<QuotesListScreen> {
+  String? _selectedStatusFilter;
+  String? _selectedDateRangeFilter;
+  DateTime? _selectedSpecificDate;
+  final TextEditingController _searchController = TextEditingController();
+
+  List<Quote> get _filteredQuotes {
+    List<Quote> filtered = widget.quotes;
+
+    if (_searchController.text.isNotEmpty) {
+      final query = _searchController.text.toLowerCase();
+      filtered = filtered.where((quote) {
+        return quote.id.toLowerCase().contains(query) ||
+            quote.buyerName.toLowerCase().contains(query) ||
+            quote.productName.toLowerCase().contains(query);
+      }).toList();
+    }
+
+    if (_selectedStatusFilter != null && _selectedStatusFilter != 'All') {
+      filtered = filtered.where((quote) => quote.status == _selectedStatusFilter).toList();
+    }
+
+    if (_selectedDateRangeFilter != null && _selectedDateRangeFilter != 'All') {
+      final now = DateTime.now();
+      if (_selectedDateRangeFilter == 'Today') {
+        filtered = filtered.where((quote) => quote.dateGenerated.day == now.day && quote.dateGenerated.month == now.month && quote.dateGenerated.year == now.year).toList();
+      } else if (_selectedDateRangeFilter == 'Last 7 Days') {
+        final sevenDaysAgo = now.subtract(const Duration(days: 7));
+        filtered = filtered.where((quote) => quote.dateGenerated.isAfter(sevenDaysAgo)).toList();
+      } else if (_selectedDateRangeFilter == 'This Month') {
+        filtered = filtered.where((quote) => quote.dateGenerated.month == now.month && quote.dateGenerated.year == now.year).toList();
+      }
+    }
+
+    if (_selectedSpecificDate != null) {
+      filtered = filtered.where((quote) =>
+          quote.dateGenerated.day == _selectedSpecificDate!.day &&
+          quote.dateGenerated.month == _selectedSpecificDate!.month &&
+          quote.dateGenerated.year == _selectedSpecificDate!.year).toList();
+    }
+
+    return filtered;
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedSpecificDate ?? DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null && picked != _selectedSpecificDate) {
+      setState(() {
+        _selectedSpecificDate = picked;
+        _selectedDateRangeFilter = 'Custom Date';
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_selectedStatusFilter == null) {
+      _selectedStatusFilter = 'All';
+    }
+    if (_selectedDateRangeFilter == null) {
+      _selectedDateRangeFilter = 'All';
+    }
+
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        children: [
+          TextField(
+            controller: _searchController,
+            decoration: InputDecoration(
+              hintText: 'Search quotes by ID, buyer, or product...',
+              prefixIcon: const Icon(Icons.search),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30.0),
+                borderSide: BorderSide.none,
+              ),
+              filled: true,
+              fillColor: Colors.grey[200],
+              contentPadding: const EdgeInsets.symmetric(vertical: 0),
+            ),
+          ),
+          const SizedBox(height: 10),
+          // MODIFIED: Replaced SizedBox(width: ... child: Row()) with Wrap()
+          Wrap( // Replaced Row, removes need for Expanded/Flexible
+            spacing: 8.0, // horizontal space between chips/dropdowns
+            runSpacing: 8.0, // vertical space between rows of chips/dropdowns
+            children: [
+              SizedBox( // Added SizedBox for a consistent width, adjust as needed
+                width: 110, // Approximate width
+                child: DropdownButtonFormField<String>(
+                  isExpanded: true,
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6), // Revert to slightly more padding
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                    labelText: 'Status',
+                    isDense: true,
+                  ),
+                  value: _selectedStatusFilter,
+                  items: <String>['All', 'Pending', 'In Progress', 'Accepted', 'Rejected', 'Delivered'].map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value, overflow: TextOverflow.ellipsis),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      _selectedStatusFilter = newValue;
+                    });
+                  },
+                ),
+              ),
+              SizedBox( // Added SizedBox for a consistent width, adjust as needed
+                width: 110, // Approximate width
+                child: DropdownButtonFormField<String>(
+                  isExpanded: true,
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6), // Revert to slightly more padding
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                    labelText: 'Date Range',
+                    isDense: true,
+                  ),
+                  value: _selectedDateRangeFilter,
+                  items: <String>['All', 'Today', 'Last 7 Days', 'This Month', 'Custom Date'].map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value, overflow: TextOverflow.ellipsis),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      _selectedDateRangeFilter = newValue;
+                      if (newValue == 'Custom Date') {
+                        _selectedSpecificDate = null; // Clear previous custom date
+                        _selectDate(context);
+                      } else {
+                        _selectedSpecificDate = null;
+                      }
+                    });
+                  },
+                ),
+              ),
+              if (_selectedDateRangeFilter == 'Custom Date' && _selectedSpecificDate != null)
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Chip(
+                    label: Text(_selectedSpecificDate!.toLocal().toString().split(' ')[0]),
+                    onDeleted: () {
+                      setState(() {
+                        _selectedSpecificDate = null;
+                        _selectedDateRangeFilter = 'All';
+                      });
+                    },
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Expanded(
+            child: ListView.builder(
+              itemCount: _filteredQuotes.length,
+              itemBuilder: (context, index) {
+                return QuoteListItem(quote: _filteredQuotes[index]);
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ===============================================
+// AdminHomeScreen (Main Container)
+// ===============================================
+
 class AdminHomeScreen extends StatefulWidget {
   const AdminHomeScreen({super.key});
 
@@ -829,160 +1131,98 @@ class AdminHomeScreen extends StatefulWidget {
   State<AdminHomeScreen> createState() => _AdminHomeScreenState();
 }
 
-class _AdminHomeScreenState extends State<AdminHomeScreen> with TickerProviderStateMixin {
-  late TabController _tabController;
+class _AdminHomeScreenState extends State<AdminHomeScreen> {
   int _selectedIndex = 0;
 
-  final List<BottomNavigationBarItem> _adminNavItems = const <BottomNavigationBarItem>[
-    BottomNavigationBarItem(icon: Icon(Icons.dashboard), label: 'Dashboard'),
-    BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Users'),
-    BottomNavigationBarItem(icon: Icon(Icons.category), label: 'Products'),
-    BottomNavigationBarItem(icon: Icon(Icons.receipt_long), label: 'Orders'),
-    BottomNavigationBarItem(icon: Icon(Icons.format_quote), label: 'Quotes'),
-  ];
-
-  // Dummy data for users, sellers, and admins
-  final List<User> _allUsers = [
-    User(id: '12345', name: 'Noah Carter', email: 'noah.carter@email.com', lastLogin: '2 days ago', role: 'Buyer', status: 'Active', activity: 'Online'),
-    User(id: '67890', name: 'Amelia Hayes', email: 'amelia.hayes@email.com', lastLogin: '1 week ago', role: 'Buyer', status: 'Active', activity: 'Offline'),
-    User(id: '24680', name: 'Owen Mitchell', email: 'owen.mitchell@email.com', lastLogin: '1 month ago', role: 'Buyer', status: 'Inactive', activity: 'Offline'),
-    User(id: '13579', name: 'Harper Reed', email: 'harper.reed@email.com', lastLogin: '3 months ago', role: 'Buyer', status: 'Active', activity: 'Offline'),
-    User(id: '97531', name: 'Caleb Foster', email: 'caleb.foster@email.com', lastLogin: '6 months ago', role: 'Buyer', status: 'Blocked', activity: 'Offline'),
-    User(id: '10101', name: 'Liam Johnson', email: 'liam.johnson@example.com', lastLogin: '1 day ago', role: 'Buyer', status: 'Active', activity: 'Online'),
-    User(id: '20202', name: 'Olivia Davis', email: 'olivia.davis@example.com', lastLogin: '5 days ago', role: 'Buyer', status: 'Active', activity: 'Offline'),
-    User(id: '30303', name: 'Ethan Miller', email: 'ethan.miller@example.com', lastLogin: '2 weeks ago', role: 'Buyer', status: 'Inactive', activity: 'Offline'),
-
-    User(id: 'S001', name: 'Sophia Wilson', email: 'sophia.w@seller.com', lastLogin: '1 hour ago', role: 'Seller', status: 'Active', activity: 'Online'),
-    User(id: 'S002', name: 'Jackson Moore', email: 'jackson.m@seller.com', lastLogin: '3 days ago', role: 'Seller', status: 'Active', activity: 'Online'),
-    User(id: 'S003', name: 'Ava Taylor', email: 'ava.t@seller.com', lastLogin: '2 months ago', role: 'Seller', status: 'Inactive', activity: 'Offline'),
-    User(id: 'S004', name: 'Lucas White', email: 'lucas.w@seller.com', lastLogin: '1 day ago', role: 'Seller', status: 'Active', activity: 'Online'),
-    User(id: 'S005', name: 'Mia Harris', email: 'mia.h@seller.com', lastLogin: '1 week ago', role: 'Seller', status: 'Blocked', activity: 'Offline'),
-
-    User(id: 'A001', name: 'Administrator One', email: 'admin1@steelsuvidha.com', lastLogin: 'Just now', role: 'Admin', status: 'Active', activity: 'Online'),
-    User(id: 'A002', name: 'Admin Two', email: 'admin2@steelsuvidha.com', lastLogin: '4 hours ago', role: 'Admin', status: 'Active', activity: 'Online'),
-  ];
-
-  // Dummy data for products
-  final List<Product> _allProducts = [
-    Product(id: '12345', name: 'Steel Sheet', category: 'Steel Sheets', supplier: 'SteelCo', status: 'Available', quantity: 'High'),
-    Product(id: '67890', name: 'Steel Coil', category: 'Steel Coils', supplier: 'MetalCorp', status: 'Available', quantity: 'High'),
-    Product(id: '11223', name: 'Steel Bar', category: 'Steel Bars', supplier: 'IronWorks', status: 'Available', quantity: 'Medium'),
-    Product(id: '33445', name: 'Steel Sheet', category: 'Steel Sheets', supplier: 'SteelCo', status: 'Out of Stock', quantity: 'Low'),
-    Product(id: '55667', name: 'Steel Coil', category: 'Steel Coils', supplier: 'MetalCorp', status: 'Available', quantity: 'Medium'),
-    Product(id: '77889', name: 'Steel Bar', category: 'Steel Bars', supplier: 'IronWorks', status: 'Available', quantity: 'High'),
-    Product(id: '99001', name: 'Alloy Plate', category: 'Specialty Alloys', supplier: 'AlloyPro', status: 'Available', quantity: 'Medium'),
-    Product(id: '22334', name: 'Rebar', category: 'Steel Bars', supplier: 'ConcreteStrong', status: 'Available', quantity: 'High'),
-    Product(id: '44556', name: 'Stainless Tube', category: 'Steel Tubes', supplier: 'TubeFlex', status: 'On Order', quantity: 'Low'),
-  ];
+  late final List<Widget> _widgetOptions;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: _adminNavItems.length, vsync: this);
-    _tabController.addListener(() {
-      if (_tabController.indexIsChanging) {
-        setState(() {
-          _selectedIndex = _tabController.index;
-        });
-      }
+    _widgetOptions = <Widget>[
+      const AdminDashboardContent(),
+      UserListScreen(userType: 'All', users: dummyUsers),
+      ProductListScreen(products: dummyProducts),
+      QuotesListScreen(quotes: dummyQuotes),
+      const Center(child: Text('Settings Content Placeholder')), // Placeholder for settings
+    ];
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
     });
   }
 
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-
-  // Helper to filter users by role
-  List<User> _getUsersByRole(String role) {
-    return _allUsers.where((user) => user.role == role).toList();
-  }
-
-  // Content for each admin tab
-  Widget _getAdminTabContent(int index) {
+  String _getPageTitle(int index) {
     switch (index) {
       case 0:
-        return const AdminDashboardContent(); // Dashboard
+        return 'Admin Dashboard';
       case 1:
-        return UserListScreen(userType: 'Buyer', users: _getUsersByRole('Buyer')); // Users (Buyers tab)
+        return 'User Management';
       case 2:
-        return ProductListScreen(products: _allProducts); // Products tab
+        return 'Product Management';
       case 3:
-        return const Center(child: Text('Orders Management Screen (To be implemented)')); // Orders
+        return 'Quotes Management';
       case 4:
-        return UserListScreen(userType: 'Admin', users: _getUsersByRole('Admin')); // Admins (reusing UserListScreen for Admin role)
+        return 'Settings';
       default:
-        return const Center(child: Text('Unknown Admin Section'));
+        return 'Admin Panel';
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    String currentTitle = _adminNavItems[_selectedIndex].label ?? 'Admin Panel';
-
-    // Special handling for "Users" and "Products" tabs to show specific titles
-    if (currentTitle == 'Users') {
-      currentTitle = 'User Management'; // As per your screenshot
-    } else if (currentTitle == 'Products') {
-      currentTitle = 'Products'; // As per your screenshot
-    } else if (currentTitle == 'Dashboard') {
-      currentTitle = 'SteelSuvidha Admin'; // As per your screenshot
-    }
-
-
     return Scaffold(
       appBar: CustomAppBar(
-        title: currentTitle,
-        showBackButton: false,
-        showShoppingCart: false,
-        leadingWidget: IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Admin Menu / Drawer will open here')),
-            );
-            // TODO: Implement actual Drawer for navigation or side menu
-          },
-        ),
+        title: _getPageTitle(_selectedIndex),
         actions: [
           IconButton(
-            icon: const Icon(Icons.add), // Plus icon as seen in screenshots
+            icon: const Icon(Icons.notifications),
             onPressed: () {
-              // Action for adding new user/product based on current tab
-              if (_selectedIndex == 1) { // Users tab
-                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Add New User')),
-                );
-                // TODO: Navigate to Add New User Screen
-              } else if (_selectedIndex == 2) { // Products tab
-                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Add New Product')),
-                );
-                // TODO: Navigate to Add New Product Screen
-              } else {
-                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Add functionality for this section')),
-                );
-              }
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Notifications pressed')),
+              );
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.person),
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Profile pressed')),
+              );
             },
           ),
         ],
       ),
-      body: TabBarView(
-        controller: _tabController,
-        physics: const NeverScrollableScrollPhysics(), // Disable swiping between tabs
-        children: List.generate(_adminNavItems.length, (index) => _getAdminTabContent(index)),
+      body: Center(
+        child: _widgetOptions.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: BottomNavBar(
         selectedIndex: _selectedIndex,
-        onItemTapped: (index) {
-          setState(() {
-            _selectedIndex = index;
-            _tabController.animateTo(index);
-          });
-        },
-        items: _adminNavItems,
+        onItemTapped: _onItemTapped,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.dashboard),
+            label: 'Dashboard',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.people),
+            label: 'Users',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.inventory_2),
+            label: 'Products',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.format_quote),
+            label: 'Quotes',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
+          ),
+        ],
       ),
     );
   }
