@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:figma_app/screens/buyer_main_screen.dart'; // Import the new BuyerMainScreen
 import 'package:figma_app/screens/seller_home_screen.dart'; // Ensure this is imported for seller
 import 'package:figma_app/screens/registration_screen.dart'; // Import RegistrationScreen
+import 'package:figma_app/screens/admin_home_screen.dart'; // <--- NEW: Import AdminHomeScreen
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -49,7 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
     } else if (_selectedRole == 'Seller' && username == 'seller' && password == 'seller123') {
       isAuthenticated = true;
     } else if (_selectedRole == 'Admin' && username == 'admin' && password == 'admin123') {
-      isAuthenticated = true; // For demonstration, admin path is just a snackbar
+      isAuthenticated = true;
     }
 
     if (isAuthenticated) {
@@ -69,10 +70,12 @@ class _LoginScreenState extends State<LoginScreen> {
           MaterialPageRoute(builder: (context) => const SellerHomeScreen()),
         );
       } else if (_selectedRole == 'Admin') {
-        // For admin, you might navigate to an admin dashboard
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Admin Dashboard (Not implemented yet)')),
+        // --- THIS IS THE CRITICAL CHANGE ---
+        Navigator.pushReplacement( // Navigate to AdminHomeScreen
+          context,
+          MaterialPageRoute(builder: (context) => const AdminHomeScreen()),
         );
+        // --- END OF CRITICAL CHANGE ---
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -94,8 +97,8 @@ class _LoginScreenState extends State<LoginScreen> {
       appBar: AppBar(
         title: const Text('Login'),
         centerTitle: true,
-        backgroundColor: Theme.of(context).primaryColor, // Use primary color for AppBar
-        foregroundColor: Colors.white, // White text for AppBar title/icons
+        backgroundColor: Theme.of(context).primaryColor,
+        foregroundColor: Colors.white,
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -105,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
             children: <Widget>[
               // Logo or App Icon
               Icon(
-                Icons.account_circle, // Placeholder for your app icon/logo
+                Icons.account_circle,
                 size: 100,
                 color: Theme.of(context).primaryColor,
               ),
