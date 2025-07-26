@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:figma_app/widgets/bottom_nav_bar.dart'; // Ensure this path is correct
 import 'package:figma_app/widgets/custom_app_bar.dart'; // Ensure this path is correct
+import 'package:figma_app/screens/admin_settings_screen.dart'; // Import your new settings screen
+import 'package:figma_app/screens/admin_profile_screen.dart'; // For the new profile screen
+import 'package:intl/intl.dart'; // For date formatting (make sure you have intl: ^0.19.0 in pubspec.yaml)
+
 
 // ===============================================
 // Data Models
@@ -46,7 +50,7 @@ class Product {
 
 class Quote {
   final String id;
-  final String buyerName; // Correct field name
+  final String buyerName;
   final String productName;
   final String requestedQuantity;
   final String status;
@@ -54,11 +58,27 @@ class Quote {
 
   Quote({
     required this.id,
-    required this.buyerName, // Correct field name
+    required this.buyerName,
     required this.productName,
     required this.requestedQuantity,
     required this.status,
     required this.dateGenerated,
+  });
+}
+
+class NotificationItem {
+  final String id;
+  final String title;
+  final String message;
+  final DateTime timestamp;
+  bool isRead;
+
+  NotificationItem({
+    required this.id,
+    required this.title,
+    required this.message,
+    required this.timestamp,
+    this.isRead = false,
   });
 }
 
@@ -103,6 +123,44 @@ final List<Quote> dummyQuotes = [
   Quote(id: 'Q008', buyerName: 'Henry Ford', productName: 'Brass Sheets', requestedQuantity: '5 sheets', status: 'Pending', dateGenerated: DateTime.now().subtract(const Duration(hours: 10))),
   Quote(id: 'Q009', buyerName: 'Ivy Green', productName: 'Aluminum Coils', requestedQuantity: '30 kg', status: 'Accepted', dateGenerated: DateTime.now().subtract(const Duration(days: 7))),
   Quote(id: 'Q010', buyerName: 'Jack Black', productName: 'Titanium Fasteners', requestedQuantity: '1000 pcs', status: 'Rejected', dateGenerated: DateTime.now().subtract(const Duration(days: 20))),
+];
+
+final List<NotificationItem> dummyNotifications = [
+  NotificationItem(
+    id: 'N001',
+    title: 'New Order Received',
+    message: 'Order #ORD2024-001 from Alice Smith is pending approval.',
+    timestamp: DateTime.now().subtract(const Duration(minutes: 5)),
+    isRead: false,
+  ),
+  NotificationItem(
+    id: 'N002',
+    title: 'Product Low Stock',
+    message: 'Steel Rebar 10mm quantity is critically low.',
+    timestamp: DateTime.now().subtract(const Duration(hours: 2)),
+    isRead: false,
+  ),
+  NotificationItem(
+    id: 'N003',
+    title: 'Quote Accepted',
+    message: 'Quote #Q002 for Stainless Steel Sheet has been accepted.',
+    timestamp: DateTime.now().subtract(const Duration(days: 1)),
+    isRead: true,
+  ),
+  NotificationItem(
+    id: 'N004',
+    title: 'New User Registration',
+    message: 'A new user, John Doe, has registered.',
+    timestamp: DateTime.now().subtract(const Duration(days: 3)),
+    isRead: true,
+  ),
+   NotificationItem(
+    id: 'N005',
+    title: 'System Update Available',
+    message: 'A new version of the admin dashboard is available.',
+    timestamp: DateTime.now().subtract(const Duration(days: 5)),
+    isRead: false,
+  ),
 ];
 
 
@@ -506,19 +564,16 @@ class _UserListScreenState extends State<UserListScreen> {
             ),
           ),
           const SizedBox(height: 10),
-          // MODIFIED: Replaced SizedBox(width: ... child: Row()) with Wrap()
-          Wrap( // Replaced Row, removes need for Expanded/Flexible
-            spacing: 8.0, // horizontal space between chips/dropdowns
-            runSpacing: 8.0, // vertical space between rows of chips/dropdowns
+          Wrap(
+            spacing: 8.0,
+            runSpacing: 8.0,
             children: [
-              // Optionally wrap each DropdownButtonFormField in a SizedBox to give it a minimum consistent width
-              // e.g., SizedBox(width: 150, child: DropdownButtonFormField...)
-              SizedBox( // Added SizedBox for a consistent width, adjust as needed
-                width: 110, // Approximate width to fit in filters, adjust based on screen size/content
+              SizedBox(
+                width: 110,
                 child: DropdownButtonFormField<String>(
-                  isExpanded: true, // Still good to have for text overflow within dropdown
+                  isExpanded: true,
                   decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6), // Revert to slightly more padding as space is now managed by Wrap
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                     labelText: 'Role',
                     isDense: true,
@@ -537,12 +592,12 @@ class _UserListScreenState extends State<UserListScreen> {
                   },
                 ),
               ),
-              SizedBox( // Added SizedBox for a consistent width, adjust as needed
-                width: 110, // Approximate width
+              SizedBox(
+                width: 110,
                 child: DropdownButtonFormField<String>(
                   isExpanded: true,
                   decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6), // Revert to slightly more padding
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                     labelText: 'Status',
                     isDense: true,
@@ -561,12 +616,12 @@ class _UserListScreenState extends State<UserListScreen> {
                   },
                 ),
               ),
-              SizedBox( // Added SizedBox for a consistent width, adjust as needed
-                width: 110, // Approximate width
+              SizedBox(
+                width: 110,
                 child: DropdownButtonFormField<String>(
                   isExpanded: true,
                   decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6), // Revert to slightly more padding
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                     labelText: 'Activity',
                     isDense: true,
@@ -756,17 +811,16 @@ class _ProductListScreenState extends State<ProductListScreen> {
             ),
           ),
           const SizedBox(height: 10),
-          // MODIFIED: Replaced SizedBox(width: ... child: Row()) with Wrap()
-          Wrap( // Replaced Row, removes need for Expanded/Flexible
-            spacing: 8.0, // horizontal space between chips/dropdowns
-            runSpacing: 8.0, // vertical space between rows of chips/dropdowns
+          Wrap(
+            spacing: 8.0,
+            runSpacing: 8.0,
             children: [
-              SizedBox( // Added SizedBox for a consistent width, adjust as needed
-                width: 110, // Approximate width
+              SizedBox(
+                width: 110,
                 child: DropdownButtonFormField<String>(
                   isExpanded: true,
                   decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6), // Revert to slightly more padding
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                     labelText: 'Status',
                     isDense: true,
@@ -785,12 +839,12 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   },
                 ),
               ),
-              SizedBox( // Added SizedBox for a consistent width, adjust as needed
-                width: 110, // Approximate width
+              SizedBox(
+                width: 110,
                 child: DropdownButtonFormField<String>(
                   isExpanded: true,
                   decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6), // Revert to slightly more padding
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                     labelText: 'Quantity',
                     isDense: true,
@@ -809,12 +863,12 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   },
                 ),
               ),
-              SizedBox( // Added SizedBox for a consistent width, adjust as needed
-                width: 110, // Approximate width
+              SizedBox(
+                width: 110,
                 child: DropdownButtonFormField<String>(
                   isExpanded: true,
                   decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6), // Revert to slightly more padding
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                     labelText: 'Category',
                     isDense: true,
@@ -876,17 +930,17 @@ class QuoteListItem extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row( // This is the Row at line 879:15
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Expanded( // ADDED: Expanded to give primary text flexibility
+                  Expanded(
                     child: Text(
                       'Quote ID: ${quote.id} | Buyer: ${quote.buyerName}',
                       style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                      overflow: TextOverflow.ellipsis, // ADDED: Handle overflow within Expanded
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  const SizedBox(width: 8), // ADDED: Small space between the two texts
+                  const SizedBox(width: 8),
                   Text(
                     quote.status,
                     style: TextStyle(
@@ -1031,17 +1085,16 @@ class _QuotesListScreenState extends State<QuotesListScreen> {
             ),
           ),
           const SizedBox(height: 10),
-          // MODIFIED: Replaced SizedBox(width: ... child: Row()) with Wrap()
-          Wrap( // Replaced Row, removes need for Expanded/Flexible
-            spacing: 8.0, // horizontal space between chips/dropdowns
-            runSpacing: 8.0, // vertical space between rows of chips/dropdowns
+          Wrap(
+            spacing: 8.0,
+            runSpacing: 8.0,
             children: [
-              SizedBox( // Added SizedBox for a consistent width, adjust as needed
-                width: 110, // Approximate width
+              SizedBox(
+                width: 110,
                 child: DropdownButtonFormField<String>(
                   isExpanded: true,
                   decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6), // Revert to slightly more padding
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                     labelText: 'Status',
                     isDense: true,
@@ -1060,12 +1113,12 @@ class _QuotesListScreenState extends State<QuotesListScreen> {
                   },
                 ),
               ),
-              SizedBox( // Added SizedBox for a consistent width, adjust as needed
-                width: 110, // Approximate width
+              SizedBox(
+                width: 110,
                 child: DropdownButtonFormField<String>(
                   isExpanded: true,
                   decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6), // Revert to slightly more padding
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                     labelText: 'Date Range',
                     isDense: true,
@@ -1144,7 +1197,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
       UserListScreen(userType: 'All', users: dummyUsers),
       ProductListScreen(products: dummyProducts),
       QuotesListScreen(quotes: dummyQuotes),
-      const Center(child: Text('Settings Content Placeholder')), // Placeholder for settings
+      const AdminSettingsScreen(), // Our dedicated settings screen
     ];
   }
 
@@ -1171,25 +1224,146 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
     }
   }
 
+  // Method to show the notification bottom sheet
+  void _showNotificationBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true, // Allows the sheet to be half or full screen
+      builder: (BuildContext context) {
+        // Calculate the height to be roughly half of the screen height
+        final screenHeight = MediaQuery.of(context).size.height;
+        final desiredHeight = screenHeight * 0.6; // 60% of the screen height
+
+        return Container(
+          height: desiredHeight,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+          ),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Notifications',
+                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () {
+                        Navigator.pop(context); // Close the bottom sheet
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: dummyNotifications.isEmpty
+                    ? const Center(
+                        child: Text('No new notifications.'),
+                      )
+                    : ListView.builder(
+                        itemCount: dummyNotifications.length,
+                        itemBuilder: (context, index) {
+                          final notification = dummyNotifications[index];
+                          return Card(
+                            margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                            elevation: notification.isRead ? 0 : 2,
+                            color: notification.isRead ? Colors.grey[100] : Colors.white,
+                            child: ListTile(
+                              leading: Icon(
+                                notification.isRead ? Icons.mark_email_read : Icons.mark_email_unread,
+                                color: notification.isRead ? Colors.grey : Theme.of(context).primaryColor,
+                              ),
+                              title: Text(
+                                notification.title,
+                                style: TextStyle(
+                                  fontWeight: notification.isRead ? FontWeight.normal : FontWeight.bold,
+                                ),
+                              ),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(notification.message),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    DateFormat('MMM d, hh:mm a').format(notification.timestamp),
+                                    style: const TextStyle(fontSize: 12, color: Colors.grey),
+                                  ),
+                                ],
+                              ),
+                              onTap: () {
+                                // Mark as read and show detail or perform action
+                                // Note: This setState rebuilds the bottom sheet content.
+                                // If dummyNotifications is a global list, changes will persist.
+                                setState(() {
+                                  notification.isRead = true;
+                                });
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('Notification "${notification.title}" tapped!')),
+                                );
+                                // Navigator.pop(context); // Optionally close after tap
+                              },
+                            ),
+                          );
+                        },
+                      ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    // TODO: Implement "Mark all as read" functionality
+                    setState(() {
+                       for (var notif in dummyNotifications) {
+                         notif.isRead = true;
+                       }
+                    });
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('All notifications marked as read.')),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blueGrey,
+                    foregroundColor: Colors.white,
+                    minimumSize: const Size(double.infinity, 45), // Make button full width
+                  ),
+                  child: const Text('Mark All as Read'),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
         title: _getPageTitle(_selectedIndex),
+        // === THE CRITICAL CHANGE IS HERE ===
+        showShoppingCart: false, // Set this to false to hide the cart icon
+        // ===================================
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications),
             onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Notifications pressed')),
-              );
+              _showNotificationBottomSheet(); // Call the method to show notifications
             },
           ),
           IconButton(
             icon: const Icon(Icons.person),
             onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Profile pressed')),
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AdminProfileScreen(user: dummyAdminUser),
+                ),
               );
             },
           ),
