@@ -11,12 +11,10 @@ const List<String> squareBarBrands = [
   'SUL',
   'Others',
 ];
-
 const List<String> squareBarFinish = [
   'MS - Mild Steel (Black)',
   'GI - Galvanised',
 ];
-
 const List<String> squareBarSizes = [
   '8 mm',
   '10 mm',
@@ -80,9 +78,7 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
     'Rungta',
     'Others',
   ];
-
   final List<String> _tmtGrades = ['500 D', '550 D', '600 D'];
-
   final List<String> _tmtSizes = [
     '6 mm',
     '8 mm',
@@ -104,12 +100,10 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
     'SUL',
     'Others',
   ];
-
   final List<String> _angleFinish = [
     'MS - Mild Steel (Black)',
     'GI - Galvanised',
   ];
-
   final List<String> _angleSizes = [
     'A 20×3',
     'A 25×3',
@@ -142,12 +136,10 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
     'SUL',
     'Others',
   ];
-
   final List<String> _flatFinish = [
     'MS - Mild Steel (Black)',
     'GI - Galvanised',
   ];
-
   final List<String> _flatSizes = [
     'F 20×3',
     'F 20×5',
@@ -204,12 +196,10 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
     'SUL',
     'Others',
   ];
-
   final List<String> _channelFinish = [
     'MS - Mild Steel (Black)',
     'GI - Galvanised',
   ];
-
   final List<String> _channelSizes = [
     'ISMC 70×40',
     'ISMC 75×40 (ULC)',
@@ -235,12 +225,10 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
     'SUL',
     'Others',
   ];
-
   final List<String> _joistFinish = [
     'MS - Mild Steel (Black)',
     'GI - Galvanised',
   ];
-
   final List<String> _joistSizes = [
     'ISMB 100',
     'ISMB 125',
@@ -262,12 +250,10 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
     'SUL',
     'Others',
   ];
-
   final List<String> _zAngleFinish = [
     'MS - Mild Steel (Black)',
     'GI - Galvanised',
   ];
-
   final List<String> _zAngleSizes = [
     'Z - Angle (L)',
     'Z - Angle (H)',
@@ -283,12 +269,10 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
     'SUL',
     'Others',
   ];
-
   final List<String> _gateChannelFinish = [
     'MS - Mild Steel (Black)',
     'GI - Galvanised',
   ];
-
   final List<String> _gateChannelSizes = [
     'Gt. Chn. 13 ft',
     'Gt. Chn. 14 ft',
@@ -305,12 +289,10 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
     'Manokaamna',
     'Others',
   ];
-
   final List<String> _takFinish = [
     'MS - Mild Steel (Black)',
     'GI - Galvanised',
   ];
-
   final List<String> _takSizes = [
     'Tak Sq. 8 mm',
     'Tak Sq. 10 mm',
@@ -331,7 +313,6 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
     'Guide 19 ft',
     'Guide 20 ft',
   ];
-
   final List<String> _takVariety = [
     'Heavy',
     'Light',
@@ -351,19 +332,16 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
     'Profile 22 ft',
     'Profile 23 ft',
   ];
-
   final List<String> _shutterProfileBrands = [
     'Jagdamba',
     'Kamdhenu',
     'Manokaamna',
     'Others',
   ];
-
   final List<String> _shutterProfileFinish = [
     'MS - Mild Steel (Black)',
     'GI - Galvanised',
   ];
-
   final List<String> _shutterProfileVariety = [
     'Heavy',
     'Light',
@@ -376,19 +354,16 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
     'Lock Plate (Roll Coil)',
     'Bracket 14"×14"',
   ];
-
   final List<String> _lockPlateBracketBrands = [
     'Jagdamba',
     'Kamdhenu',
     'Manokaamna',
     'Others',
   ];
-
   final List<String> _lockPlateBracketFinish = [
     'MS - Mild Steel (Black)',
     'GI - Galvanised',
   ];
-
   final List<String> _lockPlateBracketVariety = [
     'Heavy',
     'Light',
@@ -408,7 +383,6 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
     '6 mm - 10×5',
     '6 mm - 21×5',
   ];
-
   final List<String> _platesBrands = [
     'Patna Iron',
     'Kamdhenu',
@@ -417,7 +391,6 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
     'Tata Structura',
     'APL Apollo',
   ];
-
   final List<String> _platesFinish = [
     'MS - Mild Steel (Black)',
     'GI - Galvanised',
@@ -432,7 +405,6 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
     '14 G',
     '16 G',
   ];
-
   final List<String> _hrSheetSizes = [
     '6×3',
     '6×4',
@@ -446,7 +418,6 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
     '8×Meter',
     '10×3',
   ];
-
   final List<String> _hrSheetBrands = [
     'TATA Astrum',
     'SAIL',
@@ -466,7 +437,6 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
     '12 G - 2.50 mm',
     '10 G - 3.00 mm',
   ];
-
   final List<String> _gpSheetSizes = [
     '6×3',
     '6×4',
@@ -479,7 +449,6 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
     '8×5',
     '8×Meter',
   ];
-
   final List<String> _gpSheetBrands = [
     'TATA',
     'SAIL',
@@ -487,7 +456,6 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
     'AM/NS INDIA',
     'Secondary (Other)',
   ];
-
   final List<String> _gpSheetFinish = [
     'Galvanised',
     'Galvannealed',
@@ -506,7 +474,6 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
     '0.35 mm',
     '0.30 mm',
   ];
-
   final List<String> _crSheetSizes = [
     '6×3',
     '6×4',
@@ -515,7 +482,6 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
     '8×4',
     '8×Meter',
   ];
-
   final List<String> _crSheetBrands = [
     'TATA Steelium Super',
     'SAIL',
@@ -537,7 +503,6 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
     '0.60 mm',
     '0.80 mm',
   ];
-
   final List<String> _roofingSheetSizes = [
     '6×3',
     '6×4',
@@ -551,7 +516,6 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
     '14×4',
     '16×4',
   ];
-
   final List<String> _roofingSheetBrands = [
     'Tata Shaktee',
     'Aarti',
@@ -571,7 +535,6 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
     '0.50 mm',
     '0.53 mm',
   ];
-
   final List<String> _profileSheetSizes = [
     '6×3.5',
     '7×3.5',
@@ -590,7 +553,6 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
     '18×4',
     '20×4',
   ];
-
   final List<String> _profileSheetBrands = [
     'TATA Durashine',
     'TATA Infinia',
@@ -608,13 +570,11 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
     '10 ft',
     '12 ft',
   ];
-
   final List<String> _asbestosTypes = [
     'Grey',
     'Colour Coated',
     'Cooling Sheet',
   ];
-
   final List<String> _asbestosBrands = [
     'Everest',
     'Visaka',
@@ -822,6 +782,7 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
             },
           ),
 
+          // TMT
           if (isTmtCategory) ...[
             _buildChipSelector(
               title: 'Select Brand',
@@ -852,6 +813,7 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
             ),
           ],
 
+          // Angles
           if (isAngleCategory) ...[
             _buildChipSelector(
               title: 'Select Brand',
@@ -882,6 +844,7 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
             ),
           ],
 
+          // Flats
           if (isFlatCategory) ...[
             _buildChipSelector(
               title: 'Select Brand',
@@ -912,6 +875,7 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
             ),
           ],
 
+          // Square Bars
           if (isSquareBarCategory) ...[
             _buildChipSelector(
               title: 'Select Brand',
@@ -942,6 +906,7 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
             ),
           ],
 
+          // Round Bars
           if (isRoundBarCategory) ...[
             _buildChipSelector(
               title: 'Select Brand',
@@ -972,6 +937,7 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
             ),
           ],
 
+          // Channels
           if (isChannelCategory) ...[
             _buildChipSelector(
               title: 'Select Brand',
@@ -1002,6 +968,7 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
             ),
           ],
 
+          // Joist
           if (isJoistCategory) ...[
             _buildChipSelector(
               title: 'Select Brand',
@@ -1032,6 +999,7 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
             ),
           ],
 
+          // Z-Angles
           if (isZAngleCategory) ...[
             _buildChipSelector(
               title: 'Select Brand',
@@ -1062,6 +1030,7 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
             ),
           ],
 
+          // Gate Channel
           if (isGateChannelCategory) ...[
             _buildChipSelector(
               title: 'Select Brand',
@@ -1092,6 +1061,7 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
             ),
           ],
 
+          // Tak Sq/Flat
           if (isTakCategory) ...[
             _buildChipSelector(
               title: 'Select Brand',
@@ -1131,8 +1101,313 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
             ),
           ],
 
-          const SizedBox(height: 16),
+          // Shutter Profile
+          if (isShutterProfileCategory) ...[
+            _buildChipSelector(
+              title: 'Select Brand',
+              options: _shutterProfileBrands,
+              selectedValue: _selectedBrand,
+              onSelected: (value) {
+                setState(() => _selectedBrand = value);
+                _applyFilters();
+              },
+            ),
+            _buildChipSelector(
+              title: 'Select Finish',
+              options: _shutterProfileFinish,
+              selectedValue: _selectedFinish,
+              onSelected: (value) {
+                setState(() => _selectedFinish = value);
+                _applyFilters();
+              },
+            ),
+            _buildChipSelector(
+              title: 'Select Size',
+              options: _shutterProfileSizes,
+              selectedValue: _selectedSize,
+              onSelected: (value) {
+                setState(() => _selectedSize = value);
+                _applyFilters();
+              },
+            ),
+            _buildChipSelector(
+              title: 'Variety',
+              options: _shutterProfileVariety,
+              selectedValue: _selectedVariety,
+              onSelected: (value) {
+                setState(() => _selectedVariety = value);
+                _applyFilters();
+              },
+            ),
+          ],
 
+          // Lock Plate / Bracket
+          if (isLockPlateBracketCategory) ...[
+            _buildChipSelector(
+              title: 'Select Item',
+              options: _lockPlateBracketItems,
+              selectedValue: _selectedSize,
+              onSelected: (value) {
+                setState(() => _selectedSize = value);
+                _applyFilters();
+              },
+            ),
+            _buildChipSelector(
+              title: 'Select Brand',
+              options: _lockPlateBracketBrands,
+              selectedValue: _selectedBrand,
+              onSelected: (value) {
+                setState(() => _selectedBrand = value);
+                _applyFilters();
+              },
+            ),
+            _buildChipSelector(
+              title: 'Select Finish',
+              options: _lockPlateBracketFinish,
+              selectedValue: _selectedFinish,
+              onSelected: (value) {
+                setState(() => _selectedFinish = value);
+                _applyFilters();
+              },
+            ),
+            _buildChipSelector(
+              title: 'Variety',
+              options: _lockPlateBracketVariety,
+              selectedValue: _selectedVariety,
+              onSelected: (value) {
+                setState(() => _selectedVariety = value);
+                _applyFilters();
+              },
+            ),
+          ],
+
+          // Plates
+          if (isPlatesCategory) ...[
+            _buildChipSelector(
+              title: 'Select Item',
+              options: _platesItems,
+              selectedValue: _selectedSize,
+              onSelected: (value) {
+                setState(() => _selectedSize = value);
+                _applyFilters();
+              },
+            ),
+            _buildChipSelector(
+              title: 'Select Brand',
+              options: _platesBrands,
+              selectedValue: _selectedBrand,
+              onSelected: (value) {
+                setState(() => _selectedBrand = value);
+                _applyFilters();
+              },
+            ),
+            _buildChipSelector(
+              title: 'Select Finish',
+              options: _platesFinish,
+              selectedValue: _selectedFinish,
+              onSelected: (value) {
+                setState(() => _selectedFinish = value);
+                _applyFilters();
+              },
+            ),
+          ],
+
+          // HR Sheets
+          if (isHRCat) ...[
+            _buildChipSelector(
+              title: 'Select Gauge',
+              options: _hrSheetGauges,
+              selectedValue: _selectedSize,
+              onSelected: (value) {
+                setState(() => _selectedSize = value);
+                _applyFilters();
+              },
+            ),
+            _buildChipSelector(
+              title: 'Select Size',
+              options: _hrSheetSizes,
+              selectedValue: _selectedSize,
+              onSelected: (value) {
+                setState(() => _selectedSize = value);
+                _applyFilters();
+              },
+            ),
+            _buildChipSelector(
+              title: 'Select Brand',
+              options: _hrSheetBrands,
+              selectedValue: _selectedBrand,
+              onSelected: (value) {
+                setState(() => _selectedBrand = value);
+                _applyFilters();
+              },
+            ),
+          ],
+
+          // GP Sheets
+          if (isGPCat) ...[
+            _buildChipSelector(
+              title: 'Select Thickness',
+              options: _gpSheetThickness,
+              selectedValue: _selectedSize,
+              onSelected: (value) {
+                setState(() => _selectedSize = value);
+                _applyFilters();
+              },
+            ),
+            _buildChipSelector(
+              title: 'Select Size',
+              options: _gpSheetSizes,
+              selectedValue: _selectedSize,
+              onSelected: (value) {
+                setState(() => _selectedSize = value);
+                _applyFilters();
+              },
+            ),
+            _buildChipSelector(
+              title: 'Select Brand',
+              options: _gpSheetBrands,
+              selectedValue: _selectedBrand,
+              onSelected: (value) {
+                setState(() => _selectedBrand = value);
+                _applyFilters();
+              },
+            ),
+            _buildChipSelector(
+              title: 'Finish',
+              options: _gpSheetFinish,
+              selectedValue: _selectedFinish,
+              onSelected: (value) {
+                setState(() => _selectedFinish = value);
+                _applyFilters();
+              },
+            ),
+          ],
+
+          // CR Sheets
+          if (isCRCat) ...[
+            _buildChipSelector(
+              title: 'Select Gauge',
+              options: _crSheetGauges,
+              selectedValue: _selectedSize,
+              onSelected: (value) {
+                setState(() => _selectedSize = value);
+                _applyFilters();
+              },
+            ),
+            _buildChipSelector(
+              title: 'Select Size',
+              options: _crSheetSizes,
+              selectedValue: _selectedSize,
+              onSelected: (value) {
+                setState(() => _selectedSize = value);
+                _applyFilters();
+              },
+            ),
+            _buildChipSelector(
+              title: 'Select Brand',
+              options: _crSheetBrands,
+              selectedValue: _selectedBrand,
+              onSelected: (value) {
+                setState(() => _selectedBrand = value);
+                _applyFilters();
+              },
+            ),
+          ],
+
+          // Roofing Sheets
+          if (isRoofingSheetCat) ...[
+            _buildChipSelector(
+              title: 'Select Thickness',
+              options: _roofingSheetThickness,
+              selectedValue: _selectedSize,
+              onSelected: (value) {
+                setState(() => _selectedSize = value);
+                _applyFilters();
+              },
+            ),
+            _buildChipSelector(
+              title: 'Select Size',
+              options: _roofingSheetSizes,
+              selectedValue: _selectedSize,
+              onSelected: (value) {
+                setState(() => _selectedSize = value);
+                _applyFilters();
+              },
+            ),
+            _buildChipSelector(
+              title: 'Select Brand',
+              options: _roofingSheetBrands,
+              selectedValue: _selectedBrand,
+              onSelected: (value) {
+                setState(() => _selectedBrand = value);
+                _applyFilters();
+              },
+            ),
+          ],
+
+          // Colour Profile Sheet
+          if (isProfileSheetCat) ...[
+            _buildChipSelector(
+              title: 'Select Thickness',
+              options: _profileSheetThicknesses,
+              selectedValue: _selectedSize,
+              onSelected: (value) {
+                setState(() => _selectedSize = value);
+                _applyFilters();
+              },
+            ),
+            _buildChipSelector(
+              title: 'Select Size',
+              options: _profileSheetSizes,
+              selectedValue: _selectedSize,
+              onSelected: (value) {
+                setState(() => _selectedSize = value);
+                _applyFilters();
+              },
+            ),
+            _buildChipSelector(
+              title: 'Select Brand',
+              options: _profileSheetBrands,
+              selectedValue: _selectedBrand,
+              onSelected: (value) {
+                setState(() => _selectedBrand = value);
+                _applyFilters();
+              },
+            ),
+          ],
+
+          // Asbestos Sheets
+          if (isAsbestosCat) ...[
+            _buildChipSelector(
+              title: 'Select Size',
+              options: _asbestosSizes,
+              selectedValue: _selectedSize,
+              onSelected: (value) {
+                setState(() => _selectedSize = value);
+                _applyFilters();
+              },
+            ),
+            _buildChipSelector(
+              title: 'Select Type',
+              options: _asbestosTypes,
+              selectedValue: _selectedType,
+              onSelected: (value) {
+                setState(() => _selectedType = value);
+                _applyFilters();
+              },
+            ),
+            _buildChipSelector(
+              title: 'Select Brand',
+              options: _asbestosBrands,
+              selectedValue: _selectedBrand,
+              onSelected: (value) {
+                setState(() => _selectedBrand = value);
+                _applyFilters();
+              },
+            ),
+          ],
+
+          const SizedBox(height: 16),
           ..._filteredProducts.map(
             (product) => Card(
               margin: const EdgeInsets.symmetric(vertical: 8),
@@ -1157,7 +1432,6 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
               ),
             ),
           ),
-
           if (_filteredProducts.isEmpty)
             const Center(
               child: Padding(
@@ -1271,5 +1545,5 @@ final List<Product> dummyProducts = [
     variety: 'Heavy',
     imageUrl: 'assets/images/tak_sq10mm.png',
   ),
-  // Add additional dummyProducts as needed for your application
+  // Add additional dummyProducts as needed
 ];
