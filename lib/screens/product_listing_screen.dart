@@ -1,377 +1,518 @@
 import 'package:flutter/material.dart';
-import 'package:steel_suvidha/screens/request_quote_screen.dart'; // Import the RequestQuoteScreen
-import 'package:steel_suvidha/screens/buyer_cart_screen.dart'; // Import the new BuyerCartScreen
-
-// 1. Define a simple Product Data Model
-class Product {
-  final String name;
-  final String metalType;
-  final String category;
-  final String? brand;
-  final String? grade;
-  final String? size; // Product size (e.g., '6 mm')
-  final String imageUrl; // For placeholder image
-
-  Product({
-    required this.name,
-    required this.metalType,
-    required this.category,
-    this.brand,
-    this.grade,
-    this.size,
-    required this.imageUrl, // Add image URL
-  });
-}
 
 class ProductListingScreen extends StatefulWidget {
   final String category;
 
-  const ProductListingScreen({super.key, required this.category});
+  const ProductListingScreen({Key? key, required this.category})
+      : super(key: key);
 
   @override
-  State<ProductListingScreen> createState() => _ProductListingScreenState();
+  _ProductListingScreenState createState() => _ProductListingScreenState();
 }
 
 class _ProductListingScreenState extends State<ProductListingScreen> {
+  // Common metal types
+  final List<String> _metalTypes = ['Steel', 'Stainless Steel', 'Aluminium'];
+
+  // Categories
+  final List<String> _categories = [
+    'TMT Rebars',
+    'Angles',
+    'Flats',
+    'Square Bars',
+    'Round Bars',
+    'Channels',
+    'Beams',
+    'Pipes',
+    'Joist / ISMB',
+    'Z-Angles', // ✅ New Category Added
+  ];
+
+  // TMT
+  final List<String> _tmtBrands = [
+    'TATA Tiscon',
+    'SAIL',
+    'Jindal',
+    'JSW',
+    'Shyam Steel',
+    'Rungta',
+    'Others'
+  ];
+  final List<String> _tmtGrades = ['500 D', '550 D', '600 D'];
+  final List<String> _tmtSizes = [
+    '6 mm', '8 mm', '10 mm', '12 mm', '16 mm', '20 mm', '25 mm', '32 mm'
+  ];
+
+  // Angles
+  final List<String> _angleBrands = [
+    'PATNA IRON', 'KAMDHENU', 'JKSPL', 'SEL TIGER', 'SAIL', 'SUL', 'OTHERS'
+  ];
+  final List<String> _angleFinish = [
+    'MS - MILD STEEL (BLACK)',
+    'GI (GALVANISED)'
+  ];
+  final List<String> _angleSizes = [
+    'A 20 X 3', 'A 25 X 3', 'A 25 X 5', 'A 30 X 3', 'A 32 X 3',
+    'A 35 X 5', 'A 35 X 6', 'A 40 X 3', 'A 40 X 5', 'A 40 X 6',
+    'A 50 X 3', 'A 50 X 5', 'A 50 X 6', 'A 65 X 5', 'A 65 X 6',
+    'A 75 X 5', 'A 75 X 8', 'A 75 X 10',
+  ];
+
+  // Flats
+  final List<String> _flatBrands = [
+    'PATNA IRON', 'KAMDHENU', 'JKSPL', 'SEL TIGER', 'SAIL', 'SUL', 'OTHERS'
+  ];
+  final List<String> _flatFinish = [
+    'MS - MILD STEEL (BLACK)',
+    'GI (GALVANISED)'
+  ];
+  final List<String> _flatSizes = [
+    'F 20X3','F 20X5','F 20X6','F 25X3','F 25X6','F 25X10','F 25X12',
+    'F 32X5','F 32X6','F 32X8','F 32X10','F 40X5','F 40X6','F 40X8',
+    'F 40X10','F 40X12','F 50X5','F 50X6','F 50X8','F 50X10','F 50X12',
+    'F 65X6','F 65X8','F 65X10','F 65X12','F 75X6','F 75X8','F 75X10',
+    'F 75X12','F 75X16','F 100X8','F 100X12'
+  ];
+
+  // Square Bars
+  final List<String> _squareBarBrands = [
+    'PATNA IRON', 'KAMDHENU', 'JKSPL', 'SEL TIGER', 'SAIL', 'SUL', 'OTHERS'
+  ];
+  final List<String> _squareBarFinish = [
+    'MS - MILD STEEL (BLACK)',
+    'GI (GALVANISED)'
+  ];
+  final List<String> _squareBarSizes = [
+    '8 mm', '10 mm', '12 mm', '16 mm', '20 mm', '25 mm', '32 mm', '40 mm'
+  ];
+
+  // Round Bars
+  final List<String> _roundBarBrands = [
+    'PATNA IRON', 'KAMDHENU', 'JKSPL', 'SEL TIGER', 'SAIL', 'SUL', 'OTHERS'
+  ];
+  final List<String> _roundBarFinish = [
+    'MS - MILD STEEL (BLACK)',
+    'GI (GALVANISED)'
+  ];
+  final List<String> _roundBarSizes = [
+    '8 mm', '10 mm', '12 mm', '16 mm', '20 mm', '25 mm', '32 mm', '40 mm'
+  ];
+
+  // Channels
+  final List<String> _channelBrands = [
+    'PATNA IRON', 'KAMDHENU', 'JKSPL', 'SEL TIGER', 'SAIL', 'SUL', 'OTHERS'
+  ];
+  final List<String> _channelFinish = [
+    'MS - MILD STEEL (BLACK)',
+    'GI (GALVANISED)'
+  ];
+  final List<String> _channelSizes = [
+    'ISMC 70X40',
+    'ISMC 75X40 (ULC)',
+    'ISMC 75X40 (LC)',
+    'ISMC 75X40 (MC)',
+    'ISMC 75X40 (H)',
+    'ISMC 100X50 (LC)',
+    'ISMC 100X50 (MC)',
+    'ISMC 100X50 (H)',
+    'ISMC 125X65',
+    'ISMC 150X75',
+    'ISMC 200X75',
+    'ISMC 250X75'
+  ];
+
+  // Joist / ISMB
+  final List<String> _joistBrands = [
+    'PATNA IRON', 'KAMDHENU', 'JKSPL', 'SEL TIGER', 'SAIL', 'SUL', 'OTHERS'
+  ];
+  final List<String> _joistFinish = [
+    'MS - MILD STEEL (BLACK)',
+    'GI (GALVANISED)'
+  ];
+  final List<String> _joistSizes = [
+    'ISMB 100','ISMB 125','ISMB 150','ISMB 200',
+    'ISMB 250','ISMB 300','ISMB 350','ISMB 400'
+  ];
+
+  // ✅ Z-Angles
+  final List<String> _zAngleBrands = [
+    'PATNA IRON', 'KAMDHENU', 'JKSPL', 'SEL TIGER', 'SAIL', 'SUL', 'OTHERS'
+  ];
+  final List<String> _zAngleFinish = [
+    'MS - MILD STEEL (BLACK)',
+    'GI (GALVANISED)'
+  ];
+  final List<String> _zAngleSizes = [
+    'Z-Angle (L)', 'Z-Angle (H)',
+  ];
+
+  // Selected values
   String? _selectedMetalType;
   String? _selectedCategory;
   String? _selectedBrand;
   String? _selectedGrade;
-  String? _selectedProductSize;
+  String? _selectedSize;
+  String? _selectedFinish;
 
-  // List of all dummy products
-  late List<Product> _allProducts;
-  // List of products after applying filters
   List<Product> _filteredProducts = [];
-
-  final List<String> _metalTypes = ['Steel', 'Stainless Steel', 'Aluminum'];
-  final List<String> _categories = ['Angles', 'TMT Rebars', 'Flats', 'Squares', 'Channel', 'Plates'];
-  final List<String> _brands = ['SAIL', 'TATA', 'Jindal', 'JSW', 'VIZAG', 'Shyam Steel', 'SEL Tiger', 'SRMB', 'Any Primary Brand'];
-  final List<String> _grades = ['500 D', '550 D', '600 D', '415', '415 D', '500'];
-  final List<String> _productSizes = [
-    '6 mm', '8 mm', '10 mm', '12 mm', '16 mm', '20 mm', '25 mm', '32 mm',
-    '40 mm', '50 mm', '60 mm', '75 mm', '100 mm',
-  ];
 
   @override
   void initState() {
     super.initState();
-    _selectedMetalType = widget.category; // Initialize with the category passed from previous screen
-
-    // Initialize all products with some dummy data
-    _allProducts = _generateDummyProducts();
-    // Apply initial filters based on the selected category
+    _selectedCategory = widget.category;
     _applyFilters();
   }
 
-  // Helper to generate a diverse set of dummy products
-  List<Product> _generateDummyProducts() {
-    List<Product> products = [];
-    int idCounter = 0;
-    for (String metal in _metalTypes) {
-      for (String cat in _categories) {
-        for (String brand in _brands.take(3)) { // Use a subset of brands for variety
-          for (String grade in _grades.take(2)) { // Use a subset of grades
-            for (String size in _productSizes.take(3)) { // Use a subset of sizes
-              idCounter++;
-              products.add(
-                Product(
-                  name: '$metal $cat $size (${brand.split(' ')[0]}, ${grade.split(' ')[0]})', // Shorter name for display
-                  metalType: metal,
-                  category: cat,
-                  brand: brand,
-                  grade: grade,
-                  size: size,
-                  imageUrl: idCounter % 2 == 0
-                      ? 'assets/images/steel_plate_placeholder.png'
-                      : 'assets/images/product_placeholder.png',
-                ),
-              );
-            }
-          }
-        }
-      }
-    }
-    // Add a few extra specific ones
-    products.add(Product(name: 'Super Steel TMT 12 mm (SAIL, 500 D)', metalType: 'Steel', category: 'TMT Rebars', brand: 'SAIL', grade: '500 D', size: '12 mm', imageUrl: 'assets/images/steel_plate_placeholder.png'));
-    products.add(Product(name: 'Alloy Plate 100 mm (Jindal, 600 D)', metalType: 'Aluminum', category: 'Plates', brand: 'Jindal', grade: '600 D', size: '100 mm', imageUrl: 'assets/images/product_placeholder.png'));
-    products.add(Product(name: 'Copper Wire 6 mm (VIZAG)', metalType: 'Copper', category: 'Channel', brand: 'VIZAG', grade: '415', size: '6 mm', imageUrl: 'assets/images/product_placeholder.png'));
-    return products;
-  }
-
-  // NEW: Function to apply filters based on current selections
   void _applyFilters() {
-    _filteredProducts = _allProducts.where((product) {
-      bool matchesMetalType = _selectedMetalType == null || product.metalType == _selectedMetalType;
-      bool matchesCategory = _selectedCategory == null || product.category == _selectedCategory;
-      bool matchesBrand = _selectedBrand == null || product.brand == _selectedBrand;
-      bool matchesGrade = _selectedGrade == null || product.grade == _selectedGrade;
-      bool matchesProductSize = _selectedProductSize == null || product.size == _selectedProductSize;
+    List<Product> products = dummyProducts;
 
-      return matchesMetalType && matchesCategory && matchesBrand && matchesGrade && matchesProductSize;
-    }).toList();
+    if (_selectedMetalType != null) {
+      products =
+          products.where((p) => p.metalType == _selectedMetalType).toList();
+    }
+    if (_selectedCategory != null) {
+      products =
+          products.where((p) => p.category == _selectedCategory).toList();
+    }
+    if (_selectedBrand != null) {
+      products = products.where((p) => p.brand == _selectedBrand).toList();
+    }
+    if (_selectedGrade != null) {
+      products = products.where((p) => p.grade == _selectedGrade).toList();
+    }
+    if (_selectedSize != null) {
+      products = products.where((p) => p.size == _selectedSize).toList();
+    }
+    if (_selectedFinish != null) {
+      products = products.where((p) => p.finish == _selectedFinish).toList();
+    }
+
+    setState(() {
+      _filteredProducts = products;
+    });
   }
 
-  Widget _buildChoiceChip(String label, String? selectedValue, ValueChanged<bool> onSelected) {
-    return ChoiceChip(
-      label: Text(label),
-      selected: selectedValue == label,
-      onSelected: onSelected,
-      selectedColor: Theme.of(context).primaryColor.withOpacity(0.2),
-      labelStyle: TextStyle(
-        color: selectedValue == label ? Theme.of(context).primaryColor : Colors.black87,
-        fontWeight: FontWeight.w500,
-      ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-        side: BorderSide(
-          color: selectedValue == label ? Theme.of(context).primaryColor : Colors.grey.shade300,
-        ),
-      ),
-      backgroundColor: Colors.white,
-      elevation: 1,
-    );
-  }
-
-  Widget _buildFilterExpansionTile({
+  Widget _buildChipSelector({
     required String title,
     required List<String> options,
     required String? selectedValue,
-    required ValueChanged<String?> onSelected,
+    required ValueChanged<String> onSelected,
   }) {
-    return Theme(
-      data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-      child: ExpansionTile(
-        title: Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-        tilePadding: EdgeInsets.zero,
-        childrenPadding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 8.0),
-        children: [
-          Wrap(
-            spacing: 8.0,
-            runSpacing: 8.0,
-            children: options.map((option) => _buildChoiceChip(option, selectedValue, (bool selected) {
-              onSelected(selected ? option : null);
-            })).toList(),
-          ),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 8),
+        Text(title,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 6),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: options.map((option) {
+            final bool isSelected = selectedValue == option;
+            return ChoiceChip(
+              label: Text(option),
+              selected: isSelected,
+              onSelected: (_) {
+                onSelected(option);
+                _applyFilters();
+              },
+            );
+          }).toList(),
+        ),
+      ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final categoryLower = _selectedCategory?.toLowerCase() ?? '';
+    final bool isTmtCategory = categoryLower.contains('tmt');
+    final bool isAngleCategory = categoryLower.contains('angle');
+    final bool isFlatCategory = categoryLower.contains('flat');
+    final bool isSquareBarCategory = categoryLower.contains('square bar');
+    final bool isRoundBarCategory = categoryLower.contains('round bar');
+    final bool isChannelCategory = categoryLower.contains('channel');
+    final bool isJoistCategory =
+        categoryLower.contains('joist') || categoryLower.contains('ismb');
+    final bool isZAngleCategory = categoryLower.contains('z-angle');
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('${widget.category} Products'),
-        backgroundColor: Theme.of(context).primaryColor,
-        foregroundColor: Colors.white,
+        title: const Text("Steel Suvidha"),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Home > Products > ${widget.category} > ${_selectedCategory ?? ''}',
-              style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              'Filters',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
-
-            const Text('Metal Type', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-            const SizedBox(height: 10),
-            Wrap(
-              spacing: 8.0,
-              runSpacing: 8.0,
-              children: _metalTypes.map((type) => _buildChoiceChip(type, _selectedMetalType, (bool selected) {
-                setState(() {
-                  _selectedMetalType = selected ? type : null;
-                  _applyFilters(); // Apply filters instantly
-                });
-              })).toList(),
-            ),
-            const SizedBox(height: 20),
-
-            const Text('Select Category', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-            const SizedBox(height: 10),
-            DropdownButtonFormField<String>(
-              value: _selectedCategory,
-              decoration: InputDecoration(
-                hintText: 'Select...',
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-              ),
-              items: _categories.map((category) {
-                return DropdownMenuItem(value: category, child: Text(category));
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  _selectedCategory = value;
-                  _applyFilters(); // Apply filters instantly
-                });
-              },
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Categories: Angles, TMT Rebars, Flats, Squares, Channel, Plates',
-              style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
-            ),
-            const SizedBox(height: 20),
-
-            _buildFilterExpansionTile(
+      body: ListView(
+        padding: const EdgeInsets.all(12),
+        children: [
+          _buildChipSelector(
+            title: 'Metal Type',
+            options: _metalTypes,
+            selectedValue: _selectedMetalType,
+            onSelected: (value) => setState(() => _selectedMetalType = value),
+          ),
+          _buildChipSelector(
+            title: 'Select Category',
+            options: _categories,
+            selectedValue: _selectedCategory,
+            onSelected: (value) => setState(() => _selectedCategory = value),
+          ),
+          if (isTmtCategory) ...[
+            _buildChipSelector(
               title: 'Select Brand',
-              options: _brands,
+              options: _tmtBrands,
               selectedValue: _selectedBrand,
-              onSelected: (value) {
-                setState(() {
-                  _selectedBrand = value;
-                  _applyFilters(); // Apply filters instantly
-                });
-              },
+              onSelected: (value) => setState(() => _selectedBrand = value),
             ),
-            const SizedBox(height: 20),
-
-            _buildFilterExpansionTile(
+            _buildChipSelector(
               title: 'Select Grade',
-              options: _grades,
+              options: _tmtGrades,
               selectedValue: _selectedGrade,
-              onSelected: (value) {
-                setState(() {
-                  _selectedGrade = value;
-                  _applyFilters(); // Apply filters instantly
-                });
-              },
+              onSelected: (value) => setState(() => _selectedGrade = value),
             ),
-            const SizedBox(height: 20),
-
-            _buildFilterExpansionTile(
-              title: 'Select Product Size', // Changed title for clarity
-              options: _productSizes,
-              selectedValue: _selectedProductSize,
-              onSelected: (value) {
-                setState(() {
-                  _selectedProductSize = value;
-                  _applyFilters(); // Apply filters instantly
-                });
-              },
+            _buildChipSelector(
+              title: 'Select Size',
+              options: _tmtSizes,
+              selectedValue: _selectedSize,
+              onSelected: (value) => setState(() => _selectedSize = value),
             ),
-            const SizedBox(height: 30),
-
-            // REMOVED: The "Apply Filters" ElevatedButton is removed from here
-
-            Text(
-              'Products (${_filteredProducts.length} Found)', // Show count of filtered products
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
-
-            // Display filtered products
-            _filteredProducts.isEmpty
-                ? const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(20.0),
-                      child: Text(
-                        'No products found matching your criteria.',
-                        style: TextStyle(fontSize: 16, color: Colors.grey),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  )
-                : ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: _filteredProducts.length, // Use filtered product count
-                    itemBuilder: (context, index) {
-                      final product = _filteredProducts[index]; // Get product from filtered list
-                      return Card(
-                        margin: const EdgeInsets.only(bottom: 16.0),
-                        elevation: 2,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                width: 100,
-                                height: 100,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  color: Colors.grey.shade200,
-                                ),
-                                child: Image.asset(product.imageUrl, fit: BoxFit.cover, errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image, size: 50)),
-                              ),
-                              const SizedBox(width: 15),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      product.name, // Use actual product name
-                                      style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 5),
-                                    Text(
-                                      'Type: ${product.metalType}, Category: ${product.category}',
-                                      style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
-                                    ),
-                                    if (product.brand != null && product.brand!.isNotEmpty) Text('Brand: ${product.brand}', style: TextStyle(fontSize: 14, color: Colors.grey.shade600)),
-                                    if (product.grade != null && product.grade!.isNotEmpty) Text('Grade: ${product.grade}', style: TextStyle(fontSize: 14, color: Colors.grey.shade600)),
-                                    if (product.size != null && product.size!.isNotEmpty) Text('Size: ${product.size}', style: TextStyle(fontSize: 14, color: Colors.grey.shade600)),
-                                    const SizedBox(height: 10),
-                                    SizedBox(
-                                      width: double.infinity,
-                                      child: OutlinedButton(
-                                        onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => RequestQuoteScreen(productName: product.name),
-                                            ),
-                                          );
-                                        },
-                                        style: OutlinedButton.styleFrom(
-                                          foregroundColor: Theme.of(context).primaryColor,
-                                          side: BorderSide(color: Theme.of(context).primaryColor),
-                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                        ),
-                                        child: const Text('Request Quote'),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
           ],
-        ),
-      ),
-      // NEW: Floating Action Button for the Cart
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Navigate to BuyerCartScreen
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const BuyerCartScreen(), // Navigate to your new cart screen
+          if (isAngleCategory) ...[
+            _buildChipSelector(
+              title: 'Select Brand',
+              options: _angleBrands,
+              selectedValue: _selectedBrand,
+              onSelected: (value) => setState(() => _selectedBrand = value),
             ),
-          );
-        },
-        backgroundColor: Theme.of(context).primaryColor,
-        foregroundColor: Colors.white,
-        child: const Icon(Icons.shopping_cart),
+            _buildChipSelector(
+              title: 'Select Finish',
+              options: _angleFinish,
+              selectedValue: _selectedFinish,
+              onSelected: (value) => setState(() => _selectedFinish = value),
+            ),
+            _buildChipSelector(
+              title: 'Select Size',
+              options: _angleSizes,
+              selectedValue: _selectedSize,
+              onSelected: (value) => setState(() => _selectedSize = value),
+            ),
+          ],
+          if (isFlatCategory) ...[
+            _buildChipSelector(
+              title: 'Select Brand',
+              options: _flatBrands,
+              selectedValue: _selectedBrand,
+              onSelected: (value) => setState(() => _selectedBrand = value),
+            ),
+            _buildChipSelector(
+              title: 'Select Finish',
+              options: _flatFinish,
+              selectedValue: _selectedFinish,
+              onSelected: (value) => setState(() => _selectedFinish = value),
+            ),
+            _buildChipSelector(
+              title: 'Select Size',
+              options: _flatSizes,
+              selectedValue: _selectedSize,
+              onSelected: (value) => setState(() => _selectedSize = value),
+            ),
+          ],
+          if (isSquareBarCategory) ...[
+            _buildChipSelector(
+              title: 'Select Brand',
+              options: _squareBarBrands,
+              selectedValue: _selectedBrand,
+              onSelected: (value) => setState(() => _selectedBrand = value),
+            ),
+            _buildChipSelector(
+              title: 'Select Finish',
+              options: _squareBarFinish,
+              selectedValue: _selectedFinish,
+              onSelected: (value) => setState(() => _selectedFinish = value),
+            ),
+            _buildChipSelector(
+              title: 'Select Size',
+              options: _squareBarSizes,
+              selectedValue: _selectedSize,
+              onSelected: (value) => setState(() => _selectedSize = value),
+            ),
+          ],
+          if (isRoundBarCategory) ...[
+            _buildChipSelector(
+              title: 'Select Brand',
+              options: _roundBarBrands,
+              selectedValue: _selectedBrand,
+              onSelected: (value) => setState(() => _selectedBrand = value),
+            ),
+            _buildChipSelector(
+              title: 'Select Finish',
+              options: _roundBarFinish,
+              selectedValue: _selectedFinish,
+              onSelected: (value) => setState(() => _selectedFinish = value),
+            ),
+            _buildChipSelector(
+              title: 'Select Size',
+              options: _roundBarSizes,
+              selectedValue: _selectedSize,
+              onSelected: (value) => setState(() => _selectedSize = value),
+            ),
+          ],
+          if (isChannelCategory) ...[
+            _buildChipSelector(
+              title: 'Select Brand',
+              options: _channelBrands,
+              selectedValue: _selectedBrand,
+              onSelected: (value) => setState(() => _selectedBrand = value),
+            ),
+            _buildChipSelector(
+              title: 'Select Finish',
+              options: _channelFinish,
+              selectedValue: _selectedFinish,
+              onSelected: (value) => setState(() => _selectedFinish = value),
+            ),
+            _buildChipSelector(
+              title: 'Select Size',
+              options: _channelSizes,
+              selectedValue: _selectedSize,
+              onSelected: (value) => setState(() => _selectedSize = value),
+            ),
+          ],
+          if (isJoistCategory) ...[
+            _buildChipSelector(
+              title: 'Select Brand',
+              options: _joistBrands,
+              selectedValue: _selectedBrand,
+              onSelected: (value) => setState(() => _selectedBrand = value),
+            ),
+            _buildChipSelector(
+              title: 'Select Finish',
+              options: _joistFinish,
+              selectedValue: _selectedFinish,
+              onSelected: (value) => setState(() => _selectedFinish = value),
+            ),
+            _buildChipSelector(
+              title: 'Select Size',
+              options: _joistSizes,
+              selectedValue: _selectedSize,
+              onSelected: (value) => setState(() => _selectedSize = value),
+            ),
+          ],
+          if (isZAngleCategory) ...[
+            _buildChipSelector(
+              title: 'Select Brand',
+              options: _zAngleBrands,
+              selectedValue: _selectedBrand,
+              onSelected: (value) => setState(() => _selectedBrand = value),
+            ),
+            _buildChipSelector(
+              title: 'Select Finish',
+              options: _zAngleFinish,
+              selectedValue: _selectedFinish,
+              onSelected: (value) => setState(() => _selectedFinish = value),
+            ),
+            _buildChipSelector(
+              title: 'Select Size',
+              options: _zAngleSizes,
+              selectedValue: _selectedSize,
+              onSelected: (value) => setState(() => _selectedSize = value),
+            ),
+          ],
+          const SizedBox(height: 16),
+          ..._filteredProducts.map((product) => Card(
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                child: ListTile(
+                  leading: Image.asset(
+                    product.imageUrl,
+                    width: 50,
+                    height: 50,
+                    fit: BoxFit.cover,
+                  ),
+                  title: Text(product.name),
+                  subtitle: Text(
+                      '${product.brand} | ${product.grade ?? product.finish ?? ''} | ${product.size}'),
+                ),
+              )),
+          if (_filteredProducts.isEmpty)
+            const Center(
+              child: Padding(
+                padding: EdgeInsets.all(20.0),
+                child: Text('No products found'),
+              ),
+            ),
+        ],
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat, // Positions it at the bottom-right
     );
   }
 }
+
+class Product {
+  final String name;
+  final String metalType;
+  final String category;
+  final String brand;
+  final String? grade;
+  final String? finish;
+  final String size;
+  final String imageUrl;
+
+  Product({
+    required this.name,
+    required this.metalType,
+    required this.category,
+    required this.brand,
+    this.grade,
+    this.finish,
+    required this.size,
+    required this.imageUrl,
+  });
+}
+
+final List<Product> dummyProducts = [
+  Product(
+    name: 'TMT 8mm',
+    metalType: 'Steel',
+    category: 'TMT Rebars',
+    brand: 'TATA Tiscon',
+    grade: '500 D',
+    size: '8 mm',
+    imageUrl: 'assets/images/tmt.png',
+  ),
+  Product( name: 'Angle A 25 X 3',
+   metalType: 'Steel',
+   category: 'Angles',
+   brand: 'PATNA IRON',
+   finish: 'MS - MILD STEEL (BLACK)',
+   size: 'A 25 X 3',
+   imageUrl: 'assets/images/angle.png',
+  ), 
+  Product( name: 'Flat F 25X6',
+  metalType: 'Steel',
+  category: 'Flats',
+  brand: 'KAMDHENU', 
+  finish: 'GI (GALVANISED)', 
+  size: 'F 25X6', 
+  imageUrl: 'assets/images/flat.png', 
+  ), 
+  Product( name: 'Square Bar 16 mm', 
+  metalType: 'Steel', 
+  category: 'Square Bars', 
+  brand: 'PATNA IRON', 
+  finish: 'MS - MILD STEEL (BLACK)', 
+  size: '16 mm', 
+  imageUrl: 'assets/images/square_bar.png', 
+  ), 
+  Product( name: 'Round Bar 20 mm', 
+  metalType: 'Steel', 
+  category: 'Round Bars', 
+  brand: 'KAMDHENU', 
+  finish: 'MS - MILD STEEL (BLACK)', 
+  size: '20 mm', 
+  imageUrl: 'assets/images/round_bar.png', 
+  ), 
+  Product( name: 'Joist ISMB 100', 
+  metalType: 'Steel', 
+  category: 'Joist / ISMB', 
+  finish: 'MS - MILD STEEL (BLACK)', 
+  brand: 'PATNA IRON', 
+  size: 'ISMB 100', 
+  imageUrl: 'assets/images/joist.png', 
+  ) ];

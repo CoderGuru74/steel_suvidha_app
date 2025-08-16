@@ -1,31 +1,16 @@
-name: steel_suvidha # CHANGED: App name
-description: A new Flutter project for Steel Suvidha. # CHANGED: Description
+name: steel_suvidha
+description: A new Flutter project for Steel Suvidha.
 
-# The following line prevents the package from being accidentally published to
-# pub.dev using `flutter pub publish`. This is preferred for private projects.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: 'none'
 
-# The following defines the version and build number for your application.
-# A version number is three numbers separated by dots, like 1.2.43
-# followed by an optional build number separated by a +.
-# Both the version and the builder number may be overridden in flutter
-# build by specifying --build-name and --build-number, respectively.
-# In Android, build-name is used as versionName while build-number used as versionCode.
-# Read more about Android versioning at https://developer.apple.com/develop/release/
-# In iOS, build-name is used as CFBundleShortVersionString while build-number is used as CFBundleVersion.
-# Read more about iOS versioning at
-# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-# In Windows, build-name is used as the major, minor, and patch parts
-# of the product and file versions while build-number is used as the build suffix.
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.0.0 <4.0.0' # Ensure your SDK constraint is compatible
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-
   cupertino_icons: ^1.0.2
   flutter_svg: ^2.0.7
   flutter_animate: ^4.0.0
@@ -34,62 +19,25 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_lints: ^2.0.0
+  flutter_launcher_icons: "^0.13.1"
+  change_app_package_name: ^1.1.0
 
-  flutter_lints: ^2.0.0 # Your existing lints
-  flutter_launcher_icons: "^0.13.1" # ADDED: For generating app icons
-  change_app_package_name: ^1.1.0 # ADDED: For changing package/bundle ID
-
-# For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
-
-# The following section is specific to Flutter packages.
 flutter:
-
-  # The following line ensures that the Material Icons font is
-  # included with your application, so that you can use the icons in
-  # the material Icons class.
   uses-material-design: true
-
-  # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/ # This includes all files directly in the 'assets' folder
-    - assets/images/ # This line is CRUCIAL to include all files in the 'assets/images/' subfolder
+    - assets/
+    - assets/images/
+    - assets/images/tmt.png
+    - assets/images/angle.png
+    - assets/images/flats.png
+    - assets/images/square_bar.png
+    - assets/images/round_bar.png
+    - assets/images/channel.png
 
-  # An image asset can refer to one or more resolution-specific "variants", see
-  # https://flutter.dev/assets-and-images/#resolution-aware.
-
-  # For details regarding assets in packages, see
-  # https://flutter.dev/assets-and-images/#from-packages
-
-  # To add custom fonts to your application, add a fonts section here,
-  # in this "flutter" section. Each entry in this list should have a
-  # "family" key with the font family name, and a "fonts" key with a
-  # list giving the asset and other descriptors for the font. For
-  # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
-  #
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/custom-fonts/#from-packages
-
-# flutter_launcher_icons configuration (add this block at the very end of the file, not indented)
 flutter_launcher_icons:
-  android: "launcher_icon" # Use a custom name for Android launcher icon
-  ios: true # Generate icons for iOS
-  image_path: "assets/images/app_logo.png" # Path to your app logo
-  min_sdk_android: 21 # Set to your project's minSdkVersion from android/app/build.gradle
-  remove_alpha_ios: true # Recommended for iOS to avoid white background issues
-  # For Android Adaptive Icons (Android 8+):
-  # You can provide a background color or an image asset, and a foreground image.
-  # If you only provide image_path, it will be used for both.
-  # adaptive_icon_background: "#FFFFFF" # Example: White background
-  # adaptive_icon_foreground: "assets/images/app_logo_foreground.png" # Example: A transparent version of your logo
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/app_logo.png"
+  min_sdk_android: 21
+  remove_alpha_ios: true
